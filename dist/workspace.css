@@ -89,7 +89,8 @@ button:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outli
 
 .background-zoom-controls{display:flex;flex-direction:column;gap:7px}.background-zoom-controls .text-button{align-self:flex-start;font-size:12px}#backgroundZoomValue{color:var(--muted);font-size:12px}
 /* Composition planning stays outside the editing canvas. */
-.blueprint-dialog{width:min(1060px,calc(100vw - 32px));max-width:1060px;max-height:calc(100dvh - 32px);padding:24px;overflow:auto}
+.blueprint-dialog{width:min(1060px,calc(100vw - 32px));max-width:1060px;max-height:calc(100dvh - 32px);padding:24px;overflow:hidden}
+.blueprint-dialog[open]{display:flex;flex-direction:column;gap:0}.blueprint-content{min-height:0;overflow:auto;overscroll-behavior:contain;scrollbar-gutter:stable;padding-right:8px}.blueprint-dialog>.dialog-header,.blueprint-dialog>.dialog-footer{flex-shrink:0}.blueprint-dialog>.dialog-footer{padding-top:14px;border-top:1px solid var(--line);background:var(--white)}
 .blueprint-dialog::backdrop{background:#0008}
 .blueprint-dialog .dialog-header{margin-bottom:12px}.blueprint-dialog h2{font-size:20px;margin:0 0 4px}.blueprint-dialog p{line-height:1.5}
 .blueprint-families{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0}
@@ -104,7 +105,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outli
 .background-color-chip #bgColor,.background-color-chip #defaultBgColor{position:absolute;inset:0;width:100%;height:100%;margin:0;padding:0;border:0;opacity:0;cursor:pointer}
 
 /* Item controls inside the composition planner. */
-.blueprint-add{display:flex;flex-direction:column;gap:8px}.blueprint-add .field{margin:0}.blueprint-item-actions{display:flex;flex-wrap:wrap;gap:6px}.blueprint-item-actions button{flex:1;min-width:90px;font-size:14px}.blueprint-roles{max-height:170px;overflow:auto}.blueprint-roles button{font-size:14px}.blueprint-properties{max-height:580px;overflow:auto;padding-right:4px}.blueprint-quantity summary{cursor:pointer;font-size:14px}.blueprint-quantity .blueprint-fields{margin-top:10px}.blueprint-fields input{font-size:14px}.blueprint-properties select{width:100%}@media(max-width:700px){.blueprint-properties{max-height:none;overflow:visible}}
+.blueprint-add{display:flex;flex-direction:column;gap:8px}.blueprint-add .field{margin:0}.blueprint-item-actions{display:flex;flex-wrap:wrap;gap:6px}.blueprint-item-actions button{flex:1;min-width:90px;font-size:14px}.blueprint-roles{max-height:none;overflow:visible}.blueprint-roles button{font-size:14px}.blueprint-properties{min-width:0;max-height:none;overflow:visible;padding-right:0}.blueprint-quantity summary{cursor:pointer;font-size:14px}.blueprint-quantity .blueprint-fields{margin-top:10px}.blueprint-fields input{font-size:14px}.blueprint-properties select{width:100%}@media(max-width:700px){.blueprint-properties{max-height:none;overflow:visible}}
 
 .blueprint-type{display:flex;align-items:center;border:1px solid var(--line);border-radius:7px;overflow:hidden;gap:0}.blueprint-type button{border:0;border-radius:0;padding:7px 5px;min-width:24px}.blueprint-type button:first-child{padding:7px 8px}.blueprint-type span{font-size:12px;min-width:14px;text-align:center}.blueprint-type button:disabled{opacity:.35}.blueprint-type:has(button[aria-pressed="true"]){border-color:var(--orange)}#blueprintRoles{max-height:none;overflow:visible}#blueprintInstances[hidden]{display:none}
 
