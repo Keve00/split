@@ -2,6 +2,9 @@
 
 Editor web para transformar imagens, textos, logos, ofertas e botões em peças publicitárias de vários formatos.
 
+![Interface do Split com seis formatos de peças publicitárias e painéis de edição](docs/split-overview.jpg)
+
+
 ## Executar localmente
 
 O app é estático: não precisa de Node.js, build, backend ou chave de API. Com Python 3 instalado:
