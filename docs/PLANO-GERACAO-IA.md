@@ -13,7 +13,7 @@ Trocar a montagem obrigatória por imagens separadas por um fluxo em que o usuá
 1. **Referência:** enviar a arte original inteira. Exibir uma prévia e campos opcionais para título, oferta, chamada para ação, cores e orientações de marca.
 2. **Entendimento:** analisar a referência uma vez com um modelo que aceite imagens e produza um briefing estruturado. Mostrar textos reconhecidos e dúvidas para correção; nunca inventar preços ou completar texto ilegível silenciosamente.
 3. **Formatos:** reutilizar tamanhos e perfis existentes. Mostrar antecipadamente quais dimensões são diretas, ajustadas ou experimentais.
-4. **Organização:** sugerir itens de logo, texto, produto, oferta e botão nos quatro diagramas atuais. O usuário pode adicionar, duplicar, remover e definir a quantidade de itens de cada tipo, além de mover e redimensionar suas áreas. Não exigir recortes individuais em PNG.
+4. **Organização:** sugerir as áreas de logo, texto, produto, oferta e botão nos quatro diagramas atuais. O usuário pode aceitar os padrões ou mover as áreas. Não exigir recortes individuais em PNG.
 5. **Geração:** produzir cada formato usando a referência original, o briefing e o diagrama correspondente. Oferecer geração de uma prévia antes do lote, quantidade de variações e estimativa de consumo.
 6. **Revisão:** mostrar progresso por peça, comparar com a referência, aprovar, gerar outra versão ou pedir uma alteração em linguagem natural.
 7. **Entrega:** exportar PNG/ZIP nas dimensões exatas e salvar um projeto `.split` com referência, briefing, planos, prompts e imagens.
@@ -51,27 +51,12 @@ Gate da primeira prova de conceito: aprovar quadrado, vertical e o banner extrem
 
 ## Como o layout vira instrução
 
-### Itens e quantidades no planejador
-
-Requisito acrescentado: cada composição deve permitir escolher quais itens aparecem e quantos existem. Os cinco tipos atuais deixam de ser cinco áreas obrigatórias.
-
-- Exibir uma lista de itens com nome, tipo e ações de adicionar, duplicar e remover. Exemplos: dois textos, três produtos, um logo e nenhum botão.
-- Oferecer quantidade por tipo, incluindo zero. Aumentar a quantidade cria instâncias independentes; diminuir permite escolher quais remover quando houver conteúdo configurado. As duas formas de edição atualizam a mesma lista.
-- Cada instância possui identidade estável, nome, conteúdo ou descrição próprios e caixa de posição/tamanho. Duplicar cria outra identidade e mantém os demais itens intactos.
-- Aplicar mudanças ao diagrama selecionado; oferecer aplicação explícita a outros diagramas. Um formato pode ter ajustes próprios sem alterar os demais.
-- Permitir desfazer/refazer adições, remoções, mudanças de quantidade e posições. Novos itens recebem posição inicial utilizável e podem ser organizados livremente.
-- Conteúdo novo é informado por texto/descrição ou vinculado ao briefing da referência, sem exigir um PNG para cada item.
-- Remover significa excluir da composição gerada, mesmo que o item exista na referência. Registrar exclusões explícitas; não basta omitir a área do guia, pois o modelo poderia reproduzi-la a partir da arte original.
-- O briefing original fica preservado. Cada composição determina a lista final de itens e suas exclusões; não recriar automaticamente itens removidos ao trocar o formato ou reabrir o projeto.
-
-Evoluir o estado de caixas únicas por tipo para listas de instâncias com `{id, type, name, content, box}` e exclusões por composição. Migrar os cinco itens dos projetos antigos para essa representação, conservando as posições. As quantidades são calculadas a partir da lista, evitando dois valores divergentes. Definir um limite operacional explícito após o piloto de qualidade, sem prometer quantidade ilimitada.
-
-Reaproveitar as caixas normalizadas `{x,y,w,h}` de `SplitBlueprint`, agora vinculadas a cada instância. Para cada tamanho:
+Reaproveitar as caixas normalizadas `{x,y,w,h}` de `SplitBlueprint`. Para cada tamanho:
 
 1. Resolver a família e aplicar eventuais ajustes específicos da peça.
 2. Converter as áreas para coordenadas do espaço de geração, incluindo margens e faixa de recorte quando houver.
 3. Criar um guia visual simples, com áreas identificadas, gerado pelo próprio app.
-4. Compilar um prompt com briefing, lista final de itens e quantidades, exclusões explícitas, textos literais, prioridade visual, áreas, margem segura, características a preservar e alterações permitidas. As escolhas da composição prevalecem sobre os itens presentes na referência.
+4. Compilar um prompt com briefing, textos literais, prioridade visual, áreas, margem segura, características a preservar e alterações permitidas.
 5. Enviar a arte original como referência de aparência e o guia como referência de composição, identificando claramente as funções de cada entrada.
 
 Exemplo conceitual de prompt:
@@ -114,7 +99,7 @@ Limitar concorrência e tentativas. Evitar submissões duplicadas; uma desconex�
 | Arquivo/módulo | Modificação planejada |
 | --- | --- |
 | `dist/index.html`, estilos | Entrada de referência, briefing, configurações, progresso e galeria de versões. |
-| `dist/blueprint.js` | Converter áreas fixas em listas de itens; adicionar quantidade, duplicação, remoção e exclusões por composição; extrair compilação independente de dados e guia visual. |
+| `dist/blueprint.js` | Preservar diagramas; extrair compilação independente de dados e guia visual. |
 | `dist/app.js` | Substituir a geração síncrona de camadas por lotes e resultados assíncronos no novo fluxo. |
 | `dist/format-profiles.js` | Reutilizar seleção; acrescentar compatibilidade de cada formato. |
 | `dist/projects.js`, `dist/project-codec.js` | Evoluir schema v4 para v5, migrar projetos antigos e salvar metadados de geração sem credenciais. |
@@ -132,7 +117,7 @@ Separar regras puras de layout/estado dos acessos globais ao DOM antes de conect
 4. **Revisão e projetos:** versões, alteração por texto, migração v4→v5, reabertura de `.split` e ZIP.
 5. **Preparação de publicação:** autenticação, armazenamento, limites por usuário, observabilidade e configuração do ambiente.
 
-Testes relevantes: transformação de coordenadas e áreas de recorte; múltiplos itens do mesmo tipo; quantidade zero; exclusão de item presente na referência; desfazer/refazer; isolamento entre diagramas e formatos; persistência de itens e exclusões; limites simultâneos do modelo; dimensões do PNG; migração de projetos; fila após reinício; submissão duplicada; quota esgotada; referência inválida; falha parcial; isolamento entre usuários. Usar provedor simulado nos testes automáticos e uma bateria pequena de gerações reais para qualidade visual.
+Testes relevantes: transformação de coordenadas e áreas de recorte; limites simultâneos do modelo; dimensões do PNG; migração de projetos; fila após reinício; submissão duplicada; quota esgotada; referência inválida; falha parcial; isolamento entre usuários. Usar provedor simulado nos testes automáticos e uma bateria pequena de gerações reais para qualidade visual.
 
 Critérios de aceite: exportação exata, texto comercial revisável e correto na versão aprovada, conteúdo essencial dentro da área útil, referência recuperável no projeto, nenhuma duplicação involuntária de chamadas e nenhuma credencial exposta.
 
