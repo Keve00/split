@@ -96,7 +96,7 @@ button:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outli
 .blueprint-families{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:18px 0}
 .blueprint-family{display:flex;flex-direction:column;align-items:center;gap:6px;padding:8px;border:1px solid var(--line);border-radius:10px;background:var(--white);font-size:12px;min-width:0}
 .blueprint-family canvas{width:100%;height:auto;max-height:110px;object-fit:contain}.blueprint-family[aria-pressed="true"],.blueprint-roles button[aria-pressed="true"]{border-color:var(--orange);color:var(--orange);background:#e8502e12}
-.blueprint-workspace{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:20px;align-items:start}.blueprint-diagram{min-width:0}.blueprint-diagram canvas{display:block;width:100%;height:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px;touch-action:none;cursor:move}.blueprint-diagram .hint{margin-top:8px}
+.blueprint-workspace{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start}.blueprint-diagram{min-width:0}.blueprint-diagram canvas{display:block;width:100%;height:auto;background:var(--paper);border:1px solid var(--line);border-radius:10px;touch-action:none;cursor:move}.blueprint-diagram .hint{margin-top:8px}
 .blueprint-properties{display:flex;flex-direction:column;gap:14px}.blueprint-roles{display:flex;flex-wrap:wrap;gap:6px}.blueprint-roles button{font-size:12px;padding:7px 10px;border:1px solid var(--line);border-radius:7px}.blueprint-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.blueprint-fields input{width:100%;min-width:0}.blueprint-dialog .dialog-footer{margin-top:18px;gap:12px}.blueprint-dialog .check-field{margin-top:14px}
 @media(max-width:700px){.blueprint-dialog{padding:16px}.blueprint-families{grid-template-columns:repeat(2,minmax(0,1fr))}.blueprint-family canvas{max-height:75px}.blueprint-workspace{grid-template-columns:1fr}.blueprint-dialog .dialog-footer{flex-wrap:wrap}.blueprint-properties{gap:10px}}
 /* Render the color chip ourselves; keep the native picker for interaction. */
@@ -120,3 +120,15 @@ button:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outli
 .blueprint-toolbar .icon-button:disabled{opacity:.35;cursor:default}
 .blueprint-toolbar #blueprintDelete:hover:enabled{color:var(--orange)}
 .blueprint-toolbar-divider{width:1px;height:20px;margin:0 4px;background:var(--line)}
+
+.blueprint-controls{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.blueprint-controls .blueprint-toolbar{margin-bottom:0;flex-shrink:0}
+.blueprint-controls .blueprint-roles{gap:6px}
+#blueprintDetails{display:grid;grid-template-columns:minmax(160px,1fr) minmax(200px,1.2fr) minmax(300px,2fr);align-items:end;gap:12px;padding:14px 0;border-top:1px solid var(--line)}
+#blueprintDetails[hidden]{display:none}
+#blueprintDetails #blueprintInstances,#blueprintDetails #blueprintWarning{grid-column:1/-1}
+#blueprintDetails .blueprint-fields{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+#blueprintDetails .field{margin:0}
+#blueprintDetails #blueprintSelection{align-self:center;font-size:14px}
+@media(max-width:800px){#blueprintDetails{grid-template-columns:minmax(0,1fr) minmax(0,2fr)}#blueprintDetails .blueprint-fields{grid-column:1/-1}}
+@media(max-width:480px){#blueprintDetails{grid-template-columns:minmax(0,1fr)}#blueprintDetails .blueprint-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.blueprint-controls{align-items:flex-start}}
