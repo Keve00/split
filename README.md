@@ -5,6 +5,10 @@ Editor web para transformar imagens, textos, logos, ofertas e botões em peças 
 ![Interface do Split com seis formatos de peças publicitárias e painéis de edição](docs/split-overview.jpg)
 
 
+## Acessar o app
+
+[**Abrir Split no GitHub Pages**](https://keve00.github.io/split/)
+
 ## Executar localmente
 
 O app é estático: não precisa de Node.js, build, backend ou chave de API. Com Python 3 instalado:
@@ -61,7 +65,7 @@ Todo o app está em `dist/`:
 
 Publique o conteúdo de `dist/` em qualquer hospedagem estática. Não há etapa de compilação.
 
-Para GitHub Pages, use uma configuração de GitHub Actions que publique `dist/` como artefato de Pages. Apenas enviar o código ao repositório não ativa a hospedagem.
+O GitHub Pages já está ativo em https://keve00.github.io/split/. O workflow `.github/workflows/pages.yml` publica `dist/` automaticamente quando o app muda na branch `main`. Também é possível iniciar uma publicação manual pela aba Actions.
 
 ## Recursos de terceiros
 
