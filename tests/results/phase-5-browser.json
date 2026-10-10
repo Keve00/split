@@ -1,0 +1,406 @@
+{
+  "schemaVersion": 1,
+  "environment": "Chrome 154.0.8037.98, Figtree, headless isolated context",
+  "quality": {
+    "schemaVersion": 1,
+    "algorithmVersion": "layout-1",
+    "memoryVersion": 3,
+    "trainingProjects": 3,
+    "trainingExamples": 54,
+    "trainingIds": [
+      "train_logo-square_0",
+      "train_logo-square_1",
+      "train_logo-square_2",
+      "train_logo-portrait_0",
+      "train_logo-portrait_1",
+      "train_logo-portrait_2",
+      "train_product-landscape_0",
+      "train_product-landscape_1",
+      "train_product-landscape_2",
+      "train_title-square_0",
+      "train_title-square_1",
+      "train_title-square_2",
+      "train_offer-square_0",
+      "train_offer-square_1",
+      "train_offer-square_2",
+      "train_cta-banner_0",
+      "train_cta-banner_1",
+      "train_cta-banner_2",
+      "train_logo-square_3",
+      "train_logo-square_4",
+      "train_logo-square_5",
+      "train_logo-portrait_3",
+      "train_logo-portrait_4",
+      "train_logo-portrait_5",
+      "train_product-landscape_3",
+      "train_product-landscape_4",
+      "train_product-landscape_5",
+      "train_title-square_3",
+      "train_title-square_4",
+      "train_title-square_5",
+      "train_offer-square_3",
+      "train_offer-square_4",
+      "train_offer-square_5",
+      "train_cta-banner_3",
+      "train_cta-banner_4",
+      "train_cta-banner_5",
+      "train_logo-square_6",
+      "train_logo-square_7",
+      "train_logo-square_8",
+      "train_logo-portrait_6",
+      "train_logo-portrait_7",
+      "train_logo-portrait_8",
+      "train_product-landscape_6",
+      "train_product-landscape_7",
+      "train_product-landscape_8",
+      "train_title-square_6",
+      "train_title-square_7",
+      "train_title-square_8",
+      "train_offer-square_6",
+      "train_offer-square_7",
+      "train_offer-square_8",
+      "train_cta-banner_6",
+      "train_cta-banner_7",
+      "train_cta-banner_8"
+    ],
+    "holdoutCases": 24,
+    "cases": [
+      {
+        "id": "holdout_logo-square_0",
+        "context": "logo-square",
+        "metric": "x",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_logo-square_1",
+        "context": "logo-square",
+        "metric": "x",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_logo-square_2",
+        "context": "logo-square",
+        "metric": "x",
+        "before": 1.0000000000000002,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_logo-square_3",
+        "context": "logo-square",
+        "metric": "x",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_logo-portrait_0",
+        "context": "logo-portrait",
+        "metric": "x",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_logo-portrait_1",
+        "context": "logo-portrait",
+        "metric": "x",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_logo-portrait_2",
+        "context": "logo-portrait",
+        "metric": "x",
+        "before": 1.0000000000000002,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_logo-portrait_3",
+        "context": "logo-portrait",
+        "metric": "x",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_product-landscape_0",
+        "context": "product-landscape",
+        "metric": "y",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_product-landscape_1",
+        "context": "product-landscape",
+        "metric": "y",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_product-landscape_2",
+        "context": "product-landscape",
+        "metric": "y",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_product-landscape_3",
+        "context": "product-landscape",
+        "metric": "y",
+        "before": 0.9999999999999997,
+        "after": 0.33333333000000004,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_title-square_0",
+        "context": "title-square",
+        "metric": "align",
+        "before": 1,
+        "after": 0,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": false,
+        "safe": true
+      },
+      {
+        "id": "holdout_title-square_1",
+        "context": "title-square",
+        "metric": "align",
+        "before": 1,
+        "after": 0,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": false,
+        "safe": true
+      },
+      {
+        "id": "holdout_title-square_2",
+        "context": "title-square",
+        "metric": "align",
+        "before": 1,
+        "after": 0,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": false,
+        "safe": true
+      },
+      {
+        "id": "holdout_title-square_3",
+        "context": "title-square",
+        "metric": "align",
+        "before": 1,
+        "after": 0,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": false,
+        "safe": true
+      },
+      {
+        "id": "holdout_offer-square_0",
+        "context": "offer-square",
+        "metric": "fontScale",
+        "before": 0.9999999999999987,
+        "after": 0.3333333299999975,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_offer-square_1",
+        "context": "offer-square",
+        "metric": "fontScale",
+        "before": 0.9999999999999988,
+        "after": 0.3333333299999982,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_offer-square_2",
+        "context": "offer-square",
+        "metric": "fontScale",
+        "before": 1.0000000000000002,
+        "after": 0.33333332999999976,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_offer-square_3",
+        "context": "offer-square",
+        "metric": "fontScale",
+        "before": 0.9999999999999987,
+        "after": 0.3333333299999975,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_cta-banner_0",
+        "context": "cta-banner",
+        "metric": "fontScale",
+        "before": 0.9999999999999992,
+        "after": 0.3333333299999995,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_cta-banner_1",
+        "context": "cta-banner",
+        "metric": "fontScale",
+        "before": 0.9999999999999994,
+        "after": 0.33333332999999854,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_cta-banner_2",
+        "context": "cta-banner",
+        "metric": "fontScale",
+        "before": 0.9999999999999994,
+        "after": 0.3333333299999991,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      },
+      {
+        "id": "holdout_cta-banner_3",
+        "context": "cta-banner",
+        "metric": "fontScale",
+        "before": 0.9999999999999992,
+        "after": 0.3333333299999995,
+        "needsCorrectionBefore": true,
+        "needsCorrectionAfter": true,
+        "safe": true
+      }
+    ],
+    "fallbacks": [
+      {
+        "id": "unmatched_logo-square_10",
+        "identical": true
+      },
+      {
+        "id": "unmatched_logo-portrait_10",
+        "identical": true
+      },
+      {
+        "id": "unmatched_product-landscape_10",
+        "identical": true
+      },
+      {
+        "id": "unmatched_title-square_10",
+        "identical": true
+      },
+      {
+        "id": "unmatched_offer-square_10",
+        "identical": true
+      },
+      {
+        "id": "unmatched_cta-banner_10",
+        "identical": true
+      }
+    ],
+    "correctionReduction": 0.7222222250000003,
+    "requiredCorrectionsBefore": 24,
+    "requiredCorrectionsAfter": 20,
+    "correctionCountReduction": 0.16666666666666663,
+    "unsafeCases": 0,
+    "worseCases": 0
+  },
+  "performance": {
+    "projectEntries": 128,
+    "generalEntries": 256,
+    "cases": [
+      {
+        "layers": 1,
+        "samples": 25,
+        "ordinaryP95Ms": 0.19999999925494194,
+        "learningP95Ms": 3.099999999627471,
+        "ordinaryMedianMs": 0.09999999962747097,
+        "learningMedianMs": 2,
+        "learningStageP95Ms": 2.900000000372529
+      },
+      {
+        "layers": 15,
+        "samples": 25,
+        "ordinaryP95Ms": 621.9000000003725,
+        "learningP95Ms": 478.09999999962747,
+        "ordinaryMedianMs": 371.7000000011176,
+        "learningMedianMs": 370.5,
+        "learningStageP95Ms": 1.599999999627471
+      }
+    ],
+    "limits": {
+      "singleLayerP95Ms": 150,
+      "additionalMedianMs": 30,
+      "learningStageP95Ms": 30
+    }
+  },
+  "drag": {
+    "durations": [
+      6.800000000745058,
+      1.800000000745058,
+      1.900000000372529,
+      1.699999999254942,
+      1.699999999254942,
+      2,
+      1.400000000372529,
+      2,
+      1.599999999627471,
+      1.5,
+      1.400000000372529,
+      1.599999999627471,
+      1.400000000372529,
+      1.599999999627471,
+      1.699999999254942,
+      1.300000000745058,
+      1.199999999254942,
+      1.900000000372529,
+      1.800000000745058,
+      1.599999999627471,
+      1.700000001117587,
+      2,
+      1.299999998882413,
+      1.699999999254942,
+      1.599999999627471
+    ],
+    "composeCalls": 0,
+    "consolidateCalls": 0,
+    "recordCalls": 0,
+    "memoryBytes": 500290,
+    "p95Ms": 2
+  },
+  "externalRequests": 0
+}

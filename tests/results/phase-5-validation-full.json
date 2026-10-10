@@ -1,0 +1,49 @@
+{
+  "schemaVersion": 1,
+  "scope": "full",
+  "platform": "win32",
+  "nodeVersion": "v24.14.0",
+  "results": [
+    {
+      "name": "unit",
+      "passed": true,
+      "exitCode": 0,
+      "error": null,
+      "checks": 85,
+      "durationMs": 3150
+    },
+    {
+      "name": "memory-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "error": null,
+      "checks": 16,
+      "durationMs": 16085
+    },
+    {
+      "name": "preferences-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "error": null,
+      "checks": 12,
+      "durationMs": 16949
+    },
+    {
+      "name": "learning-layout-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "error": null,
+      "checks": 7,
+      "durationMs": 11281
+    },
+    {
+      "name": "evaluation-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "error": null,
+      "checks": 4,
+      "durationMs": 28411
+    }
+  ],
+  "passed": true
+}
