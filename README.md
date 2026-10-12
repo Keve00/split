@@ -25,6 +25,8 @@ Use um servidor HTTP em vez de abrir o HTML diretamente, para que fontes e recur
 
 ## Como usar
 
+Nesta branch, há também o [experimento Vídeo Studio](docs/VIDEO-STUDIO.md): animação dos assets das composições e exportação de projetos Hyperframes, sem LLM. Acesse pelo botão **Vídeos · LAB**. O MP4 é renderizado localmente pelo Hyperframes; a versão pública continua na `main`.
+
 1. Adicione um fundo ou escolha uma cor chapada. Carregue as imagens de logo, texto, oferta e botão ou escreva os textos no editor.
 2. Selecione formatos de saída; cadastre tamanhos personalizados e salve seleções em perfis.
 3. Clique em **Gerar composições** e ajuste os diagramas de posição para peças horizontais, superhorizontais, verticais e superverticais.
