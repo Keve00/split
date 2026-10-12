@@ -9,23 +9,30 @@ Editor web para transformar imagens, textos, logos, ofertas e botões em peças 
 
 [**Abrir Split no GitHub Pages**](https://keve00.github.io/split/)
 
-## Executar localmente
+## Executar com vídeo integrado
 
-O app é estático: não precisa de Node.js, build, backend ou chave de API. Com Python 3 instalado:
+Nesta branch experimental, o app inclui um servidor de renderização Hyperframes.
+Instale **Node.js 22+** e **FFmpeg**, depois:
 
 ```sh
-git clone https://github.com/Keve00/split.git
+git clone --branch experiment/video-studio https://github.com/Keve00/split.git
 cd split
-python -m http.server 8000 --directory dist
+npm ci
+npm start
 ```
 
-Abra http://localhost:8000. No Windows, também é possível usar `py -m http.server 8000 --directory dist`.
+Abra http://127.0.0.1:8000. Na primeira renderização, o Hyperframes pode baixar o
+Chromium necessário. Gere as composições, abra **Vídeos · LAB** e clique em
+**Gerar MP4**. Aguarde o progresso e use **Baixar MP4** na própria plataforma.
+Não são necessárias chaves de API, LLMs ou comandos manuais para cada vídeo.
 
-Use um servidor HTTP em vez de abrir o HTML diretamente, para que fontes e recursos locais sejam carregados corretamente.
+O editor de imagens e a prévia também podem rodar apenas como site estático:
+`python -m http.server 8000 --directory dist`. A geração integrada de MP4 requer
+`npm start`, pois o GitHub Pages não executa Hyperframes, Chromium e FFmpeg.
 
 ## Como usar
 
-Nesta branch, há também o [experimento Vídeo Studio](docs/VIDEO-STUDIO.md): animação dos assets das composições e exportação de projetos Hyperframes, sem LLM. Acesse pelo botão **Vídeos · LAB**. O MP4 é renderizado localmente pelo Hyperframes; a versão pública continua na `main`.
+Nesta branch, há também o [experimento Vídeo Studio](docs/VIDEO-STUDIO.md): animação dos assets, renderização integrada e download de MP4 com Hyperframes, sem LLM. Acesse pelo botão **Vídeos · LAB**. A versão pública continua na `main`.
 
 1. Adicione um fundo ou escolha uma cor chapada. Carregue as imagens de logo, texto, oferta e botão ou escreva os textos no editor.
 2. Selecione formatos de saída; cadastre tamanhos personalizados e salve seleções em perfis.
@@ -39,6 +46,7 @@ A geração de layouts e as adaptações de fundo acontecem no navegador, com al
 ## Dados e exportação
 
 - Perfis, preferências e recuperação automática são locais ao navegador. O repositório não armazena campanhas nem imagens enviadas pelos usuários.
+- Quando você clica em **Gerar MP4**, as camadas da peça vão para o servidor Hyperframes do Split. O servidor local trabalha em pastas temporárias e remove os arquivos depois de 30 minutos; não usa modelos nem envia campanhas a serviços de IA.
 - O arquivo `.split` contém os dados e as imagens necessários para reabrir a campanha em outro navegador.
 - O PNG mantém exatamente as dimensões escolhidas em pixels. O controle de DPI grava a densidade de impressão e não aumenta a quantidade de pixels.
 - Elementos fora da peça são recortados na exportação.
@@ -53,7 +61,7 @@ A geração de layouts e as adaptações de fundo acontecem no navegador, com al
 
 ## Estrutura
 
-Todo o app está em `dist/`:
+A interface está em `dist/`; o servidor de vídeo fica em `server/`:
 
 - `index.html`, `styles.css`, `workspace.css`: interface e temas.
 - `app.js`, `editing.js`, `rotation.js`, `alignment.js`: canvas e edição.
@@ -61,11 +69,13 @@ Todo o app está em `dist/`:
 - `background.js`, `synthesis.js`, `feather.js`: adaptação e suavização do fundo.
 - `project-codec.js`, `projects.js`, `format-profiles.js`: projetos e perfis.
 - `output-density.js`: densidade DPI dos PNGs.
+- `video-studio.js`, `video-composition.js`, `video-animation.js`: autoria, prévia e contrato de vídeo.
+- `server/video-server.cjs`: fila e renderização integrada de MP4 com Hyperframes.
 - `fonts/` e `vendor/`: fontes Figtree e OpenCV, com suas licenças.
 
 ## Hospedagem estática
 
-Publique o conteúdo de `dist/` em qualquer hospedagem estática. Não há etapa de compilação.
+Publique o conteúdo de `dist/` em qualquer hospedagem estática. Não há etapa de compilação para o editor estático. Para gerar MP4 integrado, execute o servidor em `server/video-server.cjs` com `npm start`.
 
 O GitHub Pages já está ativo em https://keve00.github.io/split/. O workflow `.github/workflows/pages.yml` publica `dist/` automaticamente quando o app muda na branch `main`. Também é possível iniciar uma publicação manual pela aba Actions.
 

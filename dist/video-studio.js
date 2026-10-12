@@ -10,9 +10,12 @@ globalThis.SplitVideoStudio = (() => {
   <label class="field">Movimento<select id="videoMotion"><option value="slide">Entrada em sequência</option><option value="zoom">Zoom suave</option><option value="fade">Aparecer suavemente</option></select></label>
   <p class="video-note">Cada camada visível da composição ganha uma entrada animada. Posições, proporções e recortes vêm da peça original.</p>
   <button id="refreshVideo" type="button">Atualizar da composição</button>
-  <hr><h3>Projeto Hyperframes</h3><p class="video-note">Baixe o projeto com as camadas da campanha para renderizar o MP4 no computador.</p>
-  <button id="exportVideoProject" type="button" class="primary" disabled>Baixar projeto · ZIP</button>
-  <details><summary class="video-note">Como gerar o MP4</summary><p class="video-note">Extraia o ZIP. Com Node.js 22+ e FFmpeg instalados, abra um terminal na pasta e execute:</p><code>npx hyperframes@0.8.150 render</code><p class="video-note">Este experimento ainda não exporta MP4 diretamente pelo navegador. Vídeo sem áudio.</p></details>
+  <hr><h3>Seu vídeo pronto</h3><button id="renderVideo" type="button" class="primary" disabled>Gerar MP4</button>
+  <progress id="videoRenderProgress" max="100" value="0" hidden aria-label="Progresso da renderização"></progress>
+  <p id="videoRenderStatus" class="video-note" role="status" aria-live="polite">Conectando ao serviço de vídeo…</p>
+  <a id="downloadRenderedVideo" class="video-download" hidden download>Baixar MP4</a>
+  <details><summary class="video-note">Exportar projeto editável</summary><p class="video-note">Leve as camadas e a animação para continuar no Hyperframes. Vídeo sem áudio.</p>
+  <button id="exportVideoProject" type="button" disabled>Baixar projeto · ZIP</button></details>
   <p id="videoStatus" class="video-note" role="status" aria-live="polite"></p></aside>
   <section class="video-preview" aria-label="Prévia do vídeo"><div id="videoScreen" class="video-screen"><div id="videoEmpty" class="video-empty"><h3>Transforme uma peça em vídeo</h3><p>Gere suas composições no Split para começar, ou abra o exemplo da plataforma.</p><button id="videoExample" type="button">Usar exemplo</button></div><iframe id="videoFrame" title="Prévia animada da campanha" hidden></iframe></div>
   <div class="video-transport"><button id="videoPlay" type="button" disabled>▶ Reproduzir</button><input id="videoSeek" type="range" min="0" max="300" value="0" step="1" disabled aria-label="Quadro do vídeo"><output id="videoTime">0:00 / 0:10</output></div>
@@ -20,16 +23,24 @@ globalThis.SplitVideoStudio = (() => {
   document.body.append(dialog);
   const el = id => document.getElementById(id);
   let snapshot = null, playing = false, raf = 0, frame = 0, buildId = 0, building = false;
+  let serverReady = false, rendering = false;
   const FPS = 30;
   const status = message => { el('videoStatus').textContent = message; };
   const textFile = (name, text) => ({name, data: new TextEncoder().encode(text)});
   const png = canvas => new Promise((resolve, reject) => canvas.toBlob(blob => blob ? resolve(blob) : reject(Error('Não foi possível preparar uma camada.')), 'image/png'));
   const escape = value => escapeText(value);
+  function renderButton() { el('renderVideo').disabled = !serverReady || !snapshot || building || rendering; }
+  async function connect() {
+    try {
+      const response = await fetch('api/video/health',{signal:AbortSignal.timeout(4000)});
+      const data = response.ok ? await response.json() : null;
+      serverReady = data?.engine === 'hyperframes';
+    } catch { serverReady = false; }
+    if (!rendering) el('videoRenderStatus').textContent = serverReady ? 'Renderização integrada com Hyperframes. Sem uso de modelos.' : 'Serviço de vídeo indisponível. Inicie o Split com npm start para gerar MP4 aqui.';
+    renderButton();
+  }
   function compositionHTML(data, preview = false) {
-    const {w, h, duration, motion, layers} = data;
-    const base = preview ? `<base href="${escape(new URL('./', location.href).href)}">` : '';
-    const markup = layers.map((layer, i) => `<img id="layer-${i}" ${i ? 'class="clip video-layer"' : 'class="clip"'} data-start="${layer.start}" data-duration="${duration-layer.start}" data-track-index="${i}" src="${escape(preview ? layer.url : layer.path)}" alt="${escape(layer.name)}">`).join('');
-    return `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=${w},height=${h}">${base}<style>*{box-sizing:border-box}html,body{margin:0;width:${w}px;height:${h}px;overflow:hidden}#split-video{width:${w}px;height:${h}px;position:relative;overflow:hidden}img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform-origin:center}</style><script src="vendor/gsap.min.js"></script></head><body><div id="split-video" data-composition-id="split-video" data-start="0" data-duration="${duration}" data-width="${w}" data-height="${h}" data-motion="${motion}">${markup}</div><script src="video-animation.js"></script><script>window.__timelines = {"split-video": window.SplitVideoTimeline};</script></body></html>`;
+    return SplitVideoComposition.html(data, preview ? new URL('./', location.href).href : '');
   }
   function pause() { playing = false; cancelAnimationFrame(raf); el('videoPlay').textContent = '▶ Reproduzir'; }
   function seek(value) {
@@ -82,11 +93,13 @@ globalThis.SplitVideoStudio = (() => {
   async function build() {
     const id = ++buildId;
     pause(); building = true;
+    renderButton();
     el('videoPlay').disabled = el('videoSeek').disabled = el('exportVideoProject').disabled = true;
     const source = outputs.find(out => out.id === el('videoFormat').value);
     if (!source) {
       release(snapshot); snapshot = null; building = false;
       el('videoFrame').hidden = true; el('videoEmpty').hidden = false;
+      renderButton();
       status('Gere uma composição para usar seus assets.'); return;
     }
     status('Preparando as camadas da campanha…');
@@ -121,11 +134,12 @@ globalThis.SplitVideoStudio = (() => {
       el('videoEmpty').hidden=true; iframe.hidden=false;
       el('videoSeek').max=duration*FPS;
       el('videoPlay').disabled=el('videoSeek').disabled=el('exportVideoProject').disabled=false;
+      renderButton();
       timeline(data); sizePreview(); seek(0);
       status(`${visible.length} camadas animadas · ${out.w} × ${out.h} px. Prévia pronta.`);
     } catch(error) {
       release(data);
-      if(id===buildId){building=false;release(snapshot);snapshot=null;el('videoFrame').hidden=true;el('videoEmpty').hidden=false;status(error.message);}
+      if(id===buildId){building=false;release(snapshot);snapshot=null;el('videoFrame').hidden=true;el('videoEmpty').hidden=false;status(error.message);renderButton();}
     }
   }
   async function checkedFile(path) {
@@ -148,7 +162,34 @@ globalThis.SplitVideoStudio = (() => {
     } catch(error) {status(error.message);}
     finally {button.disabled=!snapshot||building;}
   }
-  el('openVideoStudio').onclick=()=>{options();dialog.showModal();build();};
+  const base64 = blob => new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result).split(',')[1]);reader.onerror=()=>reject(Error('Não foi possível preparar um asset.'));reader.readAsDataURL(blob);});
+  async function renderVideo() {
+    if (!snapshot || !serverReady || rendering || building) return;
+    const data=snapshot; rendering=true;renderButton();pause();
+    const progress=el('videoRenderProgress'), message=el('videoRenderStatus');
+    progress.hidden=false;progress.value=0;el('downloadRenderedVideo').hidden=true;
+    message.textContent='Preparando assets para renderização…';
+    try {
+      const payload={w:data.w,h:data.h,duration:data.duration,motion:data.motion,layers:[]};
+      for(const layer of data.layers)payload.layers.push({name:layer.name,start:layer.start,png:await base64(layer.blob)});
+      const response=await fetch('api/video/jobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload),signal:AbortSignal.timeout(30000)});
+      let job=await response.json();if(!response.ok)throw Error(job.error||'Não foi possível iniciar o vídeo.');
+      const started=Date.now();
+      while(!['done','error'].includes(job.status)){
+        if(Date.now()-started>7*60*1000)throw Error('O servidor demorou para responder. Tente novamente.');
+        progress.value=job.progress;
+        message.textContent=job.status==='queued'?'Vídeo na fila de renderização…':`Renderizando vídeo · ${Math.round(job.progress)}%`;
+        await new Promise(resolve=>setTimeout(resolve,1000));
+        const poll=await fetch(`api/video/jobs/${job.id}`,{signal:AbortSignal.timeout(15000)});
+        job=await poll.json();if(!poll.ok)throw Error(job.error||'Não foi possível acompanhar o vídeo.');
+      }
+      if(job.status==='error')throw Error(job.error);
+      progress.value=100;message.textContent=`Vídeo pronto · ${data.w} × ${data.h} px · ${data.duration}s. Baixe seu MP4.`;
+      const link=el('downloadRenderedVideo');link.href=new URL(job.download,location.href).href;link.download=`${safeName()}-${data.w}x${data.h}.mp4`;link.hidden=false;
+    } catch(error){message.textContent=error.message;progress.hidden=true;}
+    finally {rendering=false;renderButton();}
+  }
+  el('openVideoStudio').onclick=()=>{options();dialog.showModal();build();connect();};
   el('closeVideoStudio').onclick=()=>dialog.close();
   dialog.addEventListener('close',()=>{pause();++buildId;building=false;release(snapshot);snapshot=null;el('videoFrame').srcdoc='';});
   dialog.addEventListener('keydown',event=>event.stopPropagation());
@@ -158,6 +199,7 @@ globalThis.SplitVideoStudio = (() => {
   el('refreshVideo').onclick=()=>{options();build();};
   el('videoExample').onclick=()=>{demo();options();build();};
   el('exportVideoProject').onclick=exportProject;
+  el('renderVideo').onclick=renderVideo;
   new ResizeObserver(sizePreview).observe(el('videoScreen'));
   return {compositionHTML};
 })();

@@ -14,6 +14,7 @@ node tests/preferences-browser.cjs
 node tests/learning-layout-browser.cjs
 node tests/evaluation-browser.cjs
 node tests/video-studio-browser.cjs
+node tests/video-render-browser.cjs
 ```
 
 O teste inicia e encerra seu próprio servidor em `127.0.0.1`, usa perfis temporários

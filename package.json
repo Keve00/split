@@ -1,0 +1,13 @@
+{
+  "name": "split-video-studio",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Split with integrated Hyperframes rendering, without LLMs",
+  "scripts": {
+    "start": "node server/video-server.cjs",
+    "test:video": "node tests/video-studio-browser.cjs",
+    "test:render": "node tests/video-render-browser.cjs"
+  },
+  "engines": {"node": ">=22"},
+  "dependencies": {"hyperframes": "0.8.150"}
+}

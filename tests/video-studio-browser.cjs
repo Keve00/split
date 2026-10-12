@@ -53,6 +53,7 @@ const server = http.createServer((req,res) => {
     await page.locator('#videoDuration').selectOption('6');
     await page.waitForFunction(()=>!document.getElementById('videoPlay').disabled);
     assert.equal(await page.locator('#videoSeek').getAttribute('max'),'180');
+    await page.getByText('Exportar projeto editável',{exact:true}).click();
     const downloadWait=page.waitForEvent('download');await page.locator('#exportVideoProject').click();
     const download=await downloadWait;assert.equal(await download.failure(),null);
     const stream=await download.createReadStream();const parts=[];for await(const chunk of stream)parts.push(chunk);
