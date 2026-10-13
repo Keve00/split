@@ -2,7 +2,6 @@
 #videoStudio::backdrop{background:#10181dbb}
 .video-header{display:flex;align-items:center;gap:20px;padding:20px 26px;border-bottom:1px solid var(--line);background:var(--white)}
 .video-header h2{margin:0;font-size:24px}.video-header p{margin:4px 0 0;color:var(--muted);font-size:14px}.video-header button{margin-left:auto}
-.video-lab{display:inline-block;font-size:11px;color:var(--orange);padding:4px 8px;border:1px solid var(--orange);border-radius:5px;vertical-align:middle}
 #closeVideoStudio{display:grid;place-items:center;flex:none;width:34px;height:34px;padding:0;font-size:24px;line-height:1}
 .video-render-all{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;cursor:pointer}
 .video-settings .video-render-all input{width:16px;height:16px;flex:none;margin:0}

@@ -3,7 +3,7 @@ globalThis.SplitVideoStudio = (() => {
   const dialog = document.createElement('dialog');
   dialog.id = 'videoStudio';
   dialog.setAttribute('aria-labelledby', 'videoTitle');
-  dialog.innerHTML = `<header class="video-header"><div><h2 id="videoTitle">Vídeo Studio <span class="video-lab">EXPERIMENTO</span></h2><p>Os mesmos assets. Uma nova forma de contar sua campanha.</p></div><button id="closeVideoStudio" type="button" aria-label="Fechar Vídeo Studio" title="Fechar">×</button></header>
+  dialog.innerHTML = `<header class="video-header"><div><h2 id="videoTitle">Vídeos</h2><p>Os mesmos assets. Uma nova forma de contar sua campanha.</p></div><button id="closeVideoStudio" type="button" aria-label="Fechar vídeos" title="Fechar">×</button></header>
   <div class="video-body"><aside class="video-settings"><label class="video-render-all"><input id="videoRenderAll" type="checkbox"> Renderizar todos os formatos</label><p id="videoRenderAllHint" class="video-note">Gera um MP4 por composição e reúne todos em um ZIP.</p><h3>Configure seu vídeo</h3>
   <label class="field">Composição de origem<select id="videoFormat"></select></label>
   <label class="field">Duração<select id="videoDuration"><option value="6">6 segundos</option><option value="10" selected>10 segundos</option><option value="15">15 segundos</option><option value="20">20 segundos</option></select></label>
