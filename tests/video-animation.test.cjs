@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {animation,html}=require('../dist/video-composition.js');
+const {validate}=require('../server/video-server.cjs');
+const legacy=animation({start:.3},6,'fade',true);
+assert.equal(legacy.enter,'fade');assert.equal(legacy.end,6);
+const tight=animation({start:5.9,animation:{end:6,exit:'slide',entryDuration:1,exitDuration:1}},6);
+assert(tight.entryDuration+tight.exitDuration<=.100001);
+assert.doesNotThrow(()=>animation({start:5.9,animation:tight},6,'slide',true));
+for(const raw of [{enter:'<script>'},{ease:'alert(1)'},{distance:Infinity},{opacity:-1},{end:7},{scale:0},{entryDuration:-1},{direction:'diagonal'}])assert.throws(()=>animation({start:0,animation:raw},6,'slide',true));
+const buffer=Buffer.alloc(33);Buffer.from([137,80,78,71,13,10,26,10]).copy(buffer);buffer.writeUInt32BE(32,16);buffer.writeUInt32BE(32,20);
+const base={w:32,h:32,duration:6,motion:'slide',layers:[{name:'Fundo',start:0,png:buffer.toString('base64')},{name:'CTA',start:2,animation:{enter:'pop',exit:'fade',end:4,opacity:.8},png:buffer.toString('base64')}]};
+const safe=validate(base);assert.equal(safe.layers[1].animation.end,4);assert.equal(safe.layers[1].animation.opacity,.8);
+assert.throws(()=>validate({...base,layers:[base.layers[0],{...base.layers[1],animation:{end:1}}]}));
+const markup=html({...safe,layers:safe.layers.map(l=>({...l,name:'"<script>&'}))});
+assert(!markup.includes('<script>&'));assert(markup.includes('data-animation="'));assert(markup.includes('data-duration="2"'));
+console.log('PASS: legacy defaults, bounded timing, API rejection of unsafe options, per-layer serialization and HTML escaping.');

@@ -1,32 +1,43 @@
-/* Real end-to-end MP4 render through the Split UI. Needs FFmpeg and Chromium. */
+/* Real browser-only MP4 render on a static subpath. ffprobe inspects the download. */
 const assert=require('node:assert/strict');
 const fs=require('node:fs/promises');
 const os=require('node:os');
 const path=require('node:path');
 const {execFileSync}=require('node:child_process');
 const {chromium}=require('playwright');
-const {createServer}=require('../server/video-server.cjs');
+const {createStaticServer}=require('../server/static-server.cjs');
 (async()=>{
-  const server=createServer();let browser,folder;
+  const server=createStaticServer('/split/');let browser,folder;
   await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
   const url=`http://127.0.0.1:${server.address().port}`;
   try{
-    const health=await (await fetch(url+'/api/video/health')).json();assert.equal(health.llm,false);
-    const invalid=await fetch(url+'/api/video/jobs',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({w:1080,h:1080,duration:6,motion:'slide',layers:[{png:'<script>bad</script>',start:0}]})});assert.equal(invalid.status,400);
-    const origin=await fetch(url+'/api/video/jobs',{method:'POST',headers:{'Content-Type':'application/json','Origin':'https://example.com'},body:'{}'});assert.equal(origin.status,403);
+    assert.equal((await fetch(url+'/split/api/video/health')).status,404);
     browser=await chromium.launch({headless:true,executablePath:process.env.SPLIT_CHROME_PATH||undefined,args:['--no-sandbox']});
     const page=await browser.newPage({viewport:{width:1440,height:1000},acceptDownloads:true});
-    const errors=[];page.on('pageerror',e=>errors.push(e.message));
-    await page.goto(url);await page.locator('#emptyDemo').click();await page.locator('#openVideoStudio').click();
+    const errors=[],apiRequests=[];page.on('pageerror',e=>errors.push(e.message));page.on('request',req=>{if(req.url().includes('/api/video/'))apiRequests.push(req.url());});
+    await page.goto(url+'/split/');await page.locator('#emptyDemo').click();await page.locator('#openVideoStudio').click();
     await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
     await page.locator('#videoFormat').selectOption('rectangle');
     await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
     await page.locator('#videoDuration').selectOption('6');
     await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
+    await page.locator('#videoLayerEnter-choices [data-value="rotate"]').click();
+    await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
+    await page.locator('#videoLayerExit-choices [data-value="slide"]').click();
+    await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
+    await page.locator('#videoLayerEnd').fill('4');await page.locator('#videoLayerEnd').dispatchEvent('change');
+    await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
+    await page.locator('#videoLayerScale').fill('50');await page.locator('#videoLayerScale').dispatchEvent('change');
+    await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
+    await page.locator('#videoLayerExitScale').fill('150');await page.locator('#videoLayerExitScale').dispatchEvent('change');
+    await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
+    await page.locator('#videoLayerRotation').fill('60');await page.locator('#videoLayerRotation').dispatchEvent('change');
+    await page.waitForFunction(()=>!document.getElementById('renderVideo').disabled);
     const before=await page.evaluate(()=>JSON.stringify(outputs));
     await page.locator('#renderVideo').click();
     await page.locator('#downloadRenderedVideo').waitFor({state:'visible',timeout:120000});
     assert.equal(await page.locator('#videoRenderProgress').getAttribute('value'),'100');
+    assert.deepEqual(apiRequests,[]);
     assert((await page.locator('#videoRenderStatus').textContent()).includes('Vídeo pronto'));
     const wait=page.waitForEvent('download');await page.locator('#downloadRenderedVideo').click();
     const download=await wait;assert.equal(await download.failure(),null);
@@ -36,6 +47,6 @@ const {createServer}=require('../server/video-server.cjs');
     const probe=JSON.parse(execFileSync('ffprobe',['-v','error','-select_streams','v:0','-show_entries','stream=width,height,r_frame_rate,duration','-of','json',file],{encoding:'utf8'}));
     assert.equal(probe.streams[0].width,300);assert.equal(probe.streams[0].height,250);assert.equal(probe.streams[0].r_frame_rate,'30/1');assert.equal(Number(probe.streams[0].duration),6);
     assert.equal(await page.evaluate(()=>JSON.stringify(outputs)),before);assert.deepEqual(errors,[]);
-    console.log('PASS: server health without LLM, invalid asset rejection, same-origin validation, integrated UI render, progress, real MP4 download (300 × 250, 6s, 30fps), editor isolation.');
+    console.log('PASS: static subpath without render API, browser encoding, progress, real MP4 download (300 × 250, 6s, 30fps), editor isolation.');
   }finally{await browser?.close();await new Promise(resolve=>server.close(resolve));if(folder)await fs.rm(folder,{recursive:true,force:true});}
 })().catch(error=>{console.error(error);process.exitCode=1;});

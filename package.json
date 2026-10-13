@@ -4,10 +4,16 @@
   "private": true,
   "description": "Split with integrated Hyperframes rendering, without LLMs",
   "scripts": {
+    "preview": "node server/static-server.cjs",
     "start": "node server/video-server.cjs",
     "test:video": "node tests/video-studio-browser.cjs",
     "test:render": "node tests/video-render-browser.cjs"
   },
-  "engines": {"node": ">=22"},
-  "dependencies": {"hyperframes": "0.8.150"}
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "hyperframes": "0.8.150",
+    "mediabunny": "1.61.4"
+  }
 }

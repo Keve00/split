@@ -6,7 +6,7 @@ const os = require('node:os');
 const path = require('node:path');
 const crypto = require('node:crypto');
 const {spawn} = require('node:child_process');
-const {html} = require('../dist/video-composition.js');
+const {html,animation,choices} = require('../dist/video-composition.js');
 const root = path.resolve(__dirname,'../dist');
 const MAX_BODY = 64*1024*1024, TTL = 30*60*1000;
 const mime = {'.html':'text/html','.js':'text/javascript','.css':'text/css','.ttf':'font/ttf','.png':'image/png','.jpg':'image/jpeg','.svg':'image/svg+xml'};
@@ -17,14 +17,16 @@ function validate(input) {
   if (!input || typeof input!=='object') invalid('Projeto inválido.');
   const {w,h,duration,motion,layers}=input;
   if (![w,h].every(n=>Number.isInteger(n)&&n>=32&&n<=4096&&n%2===0)||w*h>8e6) invalid('O vídeo precisa de dimensões pares, entre 32 e 4096 px, e até 8 megapixels.');
-  if (![6,10,15,20].includes(duration)||!['slide','zoom','fade'].includes(motion)) invalid('Duração ou movimento inválido.');
+  if (![6,10,15,20].includes(duration)||!choices.enter.includes(motion)) invalid('Duração ou movimento inválido.');
   if(!Array.isArray(layers)||layers.length<1||layers.length>60)invalid('O vídeo precisa de 1 a 60 camadas, incluindo o fundo.');
   const safe=layers.map((layer,i)=>{
-    if(!layer||typeof layer.png!=='string'||layer.png.length>20*1024*1024||!Number.isFinite(layer.start)||layer.start<0||layer.start>duration-.7)invalid('Camada inválida ou muito grande.');
+    if(!layer||typeof layer.png!=='string'||layer.png.length>20*1024*1024||!Number.isFinite(layer.start)||layer.start<0||layer.start>duration-.1)invalid('Camada inválida ou muito grande.');
     const buffer=Buffer.from(layer.png,'base64');
     if(buffer.length<33||!buffer.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))||buffer.readUInt32BE(16)!==w||buffer.readUInt32BE(20)!==h)invalid('Cada camada precisa ser um PNG nas dimensões da composição.');
     if(i===0&&layer.start!==0)invalid('O fundo deve começar no quadro zero.');
-    return {name:String(layer.name||`Camada ${i+1}`).slice(0,120),start:layer.start,path:`assets/layer-${i}.png`,buffer};
+    let safeAnimation;
+    try { safeAnimation=animation(layer,duration,motion,true); } catch(error) { invalid(error.message); }
+    return {name:String(layer.name||`Camada ${i+1}`).slice(0,120),start:layer.start,animation:safeAnimation,path:`assets/layer-${i}.png`,buffer};
   });
   return {w,h,duration,motion,layers:safe};
 }
