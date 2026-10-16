@@ -134,3 +134,22 @@ button:focus-visible,summary:focus-visible{outline:2px solid var(--orange);outli
 @media(max-width:480px){#blueprintDetails{grid-template-columns:minmax(0,1fr)}#blueprintDetails .blueprint-fields{grid-template-columns:repeat(2,minmax(0,1fr))}.blueprint-controls{align-items:flex-start}}
 
 #blueprintCanvas{max-width:800px;margin-inline:auto}
+/* Rótulos, nomes de camada, estados de projeto e painéis por contexto */
+.selection-actions button{flex-direction:column;gap:3px;padding:6px 2px;font-size:11px;line-height:1.1}
+.selection-actions button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+.layer-button{display:flex;flex-direction:column;align-items:flex-start;gap:1px}
+.layer-button .layer-role,.layer-button .layer-detail{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.layer-button .layer-detail{font-size:11px;color:var(--muted)}
+#saveProject.unsaved::after{content:"";display:inline-block;width:7px;height:7px;margin-left:6px;border-radius:50%;background:var(--orange);vertical-align:middle}
+#generate[aria-disabled=true]{opacity:.55;cursor:not-allowed}
+.view-hint{display:none}
+body[data-view=grid] .view-hint{display:block}
+body[data-view=grid] #panel-layers .panel-body>:not(.view-hint),body[data-view=grid] #panel-properties .panel-body>:not(.view-hint){display:none!important}
+body[data-view=grid] #layerCount{visibility:hidden}
+/* Propriedades: conteúdo, posição e rotação juntos, antes da tipografia */
+#properties:not([hidden]){display:contents}
+#panel-properties .panel-body>*,#properties>*{order:5}
+#properties>.section-line{order:1}
+#properties>#textField{order:2}
+#properties>.prop-grid{order:3}
+#rotationControls{order:4}

@@ -46,7 +46,7 @@ globalThis.SplitVideoStudio = (() => {
   document.body.append(dialog);
   const el = id => document.getElementById(id);
   let snapshot = null, playing = false, raf = 0, frame = 0, buildId = 0, building = false;
-  let serverReady = false, rendering = false;
+  let serverReady = false, rendering = false, posterFrame = -1;
   let batchDownloadUrl = null;
   let renderController = null;
   let selectedLayer = 1;
@@ -147,7 +147,9 @@ globalThis.SplitVideoStudio = (() => {
   function play() {
     if (!snapshot || building) return;
     if (playing) { pause(); return; }
-    if (frame >= snapshot.duration * FPS) seek(0);
+    // A fresh preview rests on its settled frame; the first play still starts from 0s.
+    if (frame === posterFrame || frame >= snapshot.duration * FPS) seek(0);
+    posterFrame = -1;
     playing = true; el('videoPlay').textContent = 'Ⅱ Pausar';
     let started = performance.now() - frame / FPS * 1000;
     const tick = now => {
@@ -274,6 +276,11 @@ globalThis.SplitVideoStudio = (() => {
       bar.append(entry,exit);track.append(bar);row.append(name,track);holder.append(row);
     });
   }
+  // First frame where every layer has finished entering, so a new preview never opens on an empty canvas.
+  function restingFrame(data) {
+    const settled=Math.max(0,...data.layers.map(layer=>(layer.start||0)+(layer.animation?.entryDuration||0)));
+    return Math.min(data.duration*FPS,Math.ceil(settled*FPS));
+  }
   async function loadPreview(data,id,at=0) {
     const iframe=el('videoFrame');
     await new Promise((resolve,reject)=>{
@@ -372,7 +379,8 @@ globalThis.SplitVideoStudio = (() => {
         if (id !== buildId) { release(data); return; }
       }
       release(snapshot);snapshot=data;selectedLayer=Math.max(1,Math.min(selectedLayer,data.layers.length-1));
-      if(!await loadPreview(data,id)) {release(data);return;}
+      if(!await loadPreview(data,id,restingFrame(data))) {release(data);return;}
+      posterFrame=frame;
       remember();
       status(`${visible.length} camadas animadas · ${out.w} × ${out.h} px. Prévia pronta.`);
     } catch(error) {
