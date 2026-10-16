@@ -811,6 +811,14 @@ summary:focus-visible {
   gap: 10px;
   font-size: 13px;
 }
+.recovery-banner > div:last-child {
+  gap: 6px;
+}
+/* Same box as Retomar, so the hover fill doesn't hug the text. */
+.recovery-banner .text-button {
+  padding: 10px 12px;
+  border-radius: 7px;
+}
 .background-controls {
   padding: 0;
   border: 0;
