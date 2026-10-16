@@ -1,19 +1,32 @@
 {
-  "name": "split-video-studio",
+  "name": "split",
   "version": "0.1.0",
   "private": true,
-  "description": "Split with integrated Hyperframes rendering, without LLMs",
+  "description": "Split Studio: anúncios em vários formatos, editados e exportados no navegador",
   "scripts": {
+    "build": "node scripts/build.mjs",
+    "check:dist": "node scripts/build.mjs --check",
+    "format": "prettier --write \"src/*.{js,css,html}\" scripts",
+    "format:check": "prettier --check \"src/*.{js,css,html}\" scripts",
+    "start": "npm run build && node server/static-server.cjs",
     "preview": "node server/static-server.cjs",
-    "start": "node server/video-server.cjs",
+    "test": "node tests/validate.cjs",
+    "test:full": "node tests/validate.cjs --full",
     "test:video": "node tests/video-studio-browser.cjs",
-    "test:render": "node tests/video-render-browser.cjs"
+    "test:render": "node tests/video-render-browser.cjs",
+    "hyperframes-server": "node server/video-server.cjs"
   },
   "engines": {
     "node": ">=22"
   },
   "dependencies": {
-    "hyperframes": "0.8.150",
     "mediabunny": "1.61.4"
+  },
+  "optionalDependencies": {
+    "hyperframes": "0.8.150"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9",
+    "prettier": "3.6.2"
   }
 }

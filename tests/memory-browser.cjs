@@ -13,7 +13,7 @@ const state=page=>page.evaluate(()=>SplitMemory.snapshot());
 async function downloadProject(page){const wait=page.waitForEvent('download');await page.locator('#saveProject').click();const result=await wait;const stream=await result.createReadStream(),chunks=[];for await(const chunk of stream)chunks.push(chunk);assert.equal(await result.failure(),null);return JSON.parse(Buffer.concat(chunks).toString('utf8'));}
 (async()=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));
- const browser=await chromium.launch({headless:true,executablePath:process.env.SPLIT_CHROME_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe'});
+ const browser=await chromium.launch({headless:true,executablePath:process.env.SPLIT_CHROME_PATH||(fs.existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe')?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined)});
  const errors=[],failures=[];const context=await browser.newContext({acceptDownloads:true}),url=`http://127.0.0.1:${server.address().port}`;
  const watch=page=>{page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failures.push(r.url()));};
  try{

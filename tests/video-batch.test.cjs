@@ -1,7 +1,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const vm=require('node:vm');
-const source=fs.readFileSync(require.resolve('../dist/video-studio.js'),'utf8');
+const source=fs.readFileSync(require.resolve('../src/video-studio.js'),'utf8');
 const code=source.slice(source.indexOf('  async function renderJob('),source.indexOf('  async function renderVideo()'));
 async function run(failIndex=-1){
   const nodes={},jobs=[],prepared=[],packed=[];

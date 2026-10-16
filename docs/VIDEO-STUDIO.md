@@ -1,6 +1,6 @@
 # Vídeo Studio — render no navegador
 
-Branch: `experiment/video-studio`, criada a partir da versão atual de `main`.
+Disponível na `main` e no GitHub Pages.
 
 **O fluxo não utiliza LLM, chave de API ou serviço de IA.** Templates e regras
 determinísticas montam a timeline. GSAP anima as camadas, e WebCodecs com
@@ -11,7 +11,6 @@ Mediabunny produz o MP4 no dispositivo do usuário, sem enviar imagens ao servid
 Para desenvolver, instale Node.js 22+ e execute:
 
 ```sh
-git switch experiment/video-studio
 npm ci
 npm run preview
 ```
@@ -26,7 +25,7 @@ H.264 via WebCodecs na resolução escolhida.
 ## Criar um vídeo dentro do Split
 
 1. Adicione imagens, logos, ofertas e textos e gere as composições normalmente.
-2. Abra **Vídeos · LAB**. Também é possível começar pelo exemplo da plataforma.
+2. Abra **Vídeos**. Também é possível começar pelo exemplo da plataforma.
 3. Escolha a composição, duração e estilo geral. Organize as entradas **Em sequência** (com intervalo ajustável) ou **Juntas**.
 4. Selecione uma camada na linha do tempo. No painel à direita, ajuste início, fim, entrada, saída, direção, duração, suavização, deslocamento, escala, rotação e opacidade. Zoom e rotação usam o centro do próprio elemento.
 5. Use **Testar esta camada**, reproduza em repetição ou clique na régua/arraste o controle de tempo. **Aplicar estilo a todas** copia os efeitos e a intensidade sem mudar os horários ou o centro de cada camada.
@@ -95,7 +94,7 @@ O botão **Cancelar renderização** interrompe o processamento e mantém os aju
 O iframe temporário, a timeline e as URLs das camadas são liberados ao terminar.
 
 O servidor antigo permanece como opção para projetos Hyperframes e pode ser
-iniciado com `npm start`. Esse fluxo separado requer FFmpeg e Chromium. A interface
+iniciado com `npm run hyperframes-server`. Esse fluxo separado requer FFmpeg e Chromium. A interface
 atual não consulta sua API nem depende dele para gerar vídeos.
 
 ## Hospedagem
@@ -104,8 +103,7 @@ O diretório `dist/` contém tudo que o GitHub Pages precisa: editor, prévia,
 renderizador e bibliotecas locais. A codificação ocorre no navegador; nenhum
 processo Node.js ou API precisa ficar hospedado. Caminhos relativos permitem
 publicar em `/split/` ou outro subdiretório. A biblioteca é carregada somente ao
-renderizar. A configuração existente publica `dist/` a partir de `main`; alterações
-nesta branch não publicam o site automaticamente.
+renderizar. A configuração existente publica `dist/` a partir de `main`.
 
 ## Limites atuais
 

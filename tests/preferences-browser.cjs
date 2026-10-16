@@ -14,7 +14,7 @@ async function save(page){const wait=page.waitForEvent('download');await page.lo
 async function exportOne(page){const wait=page.waitForEvent('download');await page.locator('#downloadOne').click();assert.equal(await (await wait).failure(),null);await page.evaluate(()=>SplitMemory.settled());}
 (async()=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url=`http://127.0.0.1:${server.address().port}`;
- const browser=await chromium.launch({headless:true,executablePath:process.env.SPLIT_CHROME_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe'}),errors=[],failures=[];
+ const browser=await chromium.launch({headless:true,executablePath:process.env.SPLIT_CHROME_PATH||(fs.existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe')?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined)}),errors=[],failures=[];
  const watch=page=>{page.on('pageerror',e=>errors.push(e.message));page.on('requestfailed',r=>failures.push(r.url()));};
  async function pageFor(context){const page=await context.newPage();watch(page);await page.goto(url);await page.evaluate(()=>SplitProjects.initialized);await page.evaluate(()=>SplitMemory.generalInitialized);return page;}
  async function train(context){const page=await pageFor(context);await page.locator('#emptyDemo').click();for(let i=0;i<3;i++){if(i)await page.evaluate(()=>generate());await page.evaluate(()=>{openFormat(outputs[0].id);selectLayer(current().layers.find(l=>l.role==='logo').id);updateProp(l=>l.x+=.01,true);});await exportOne(page);}return page;}

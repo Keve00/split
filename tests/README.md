@@ -3,8 +3,12 @@
 Testes de lógica e compatibilidade, usando Node.js:
 
 ```sh
-node tests/validate.cjs
+npm test            # o mesmo que node tests/validate.cjs
+npm run test:full   # inclui os testes em navegador
 ```
+
+A CI do GitHub roda `node tests/validate.cjs` em cada pull request e antes de
+publicar no GitHub Pages.
 
 Teste de integração da memória em Chrome isolado, com Playwright disponível:
 
@@ -13,14 +17,15 @@ node tests/memory-browser.cjs
 node tests/preferences-browser.cjs
 node tests/learning-layout-browser.cjs
 node tests/evaluation-browser.cjs
+node tests/flow-browser.cjs
 node tests/video-studio-browser.cjs
 node tests/video-render-browser.cjs
 ```
 
 O teste inicia e encerra seu próprio servidor em `127.0.0.1`, usa perfis temporários
-e não acessa campanhas, dados ou perfis pessoais. O caminho padrão do Chrome é
-`C:/Program Files/Google/Chrome/Application/chrome.exe`; use `SPLIT_CHROME_PATH`
-para outro caminho. Se Playwright não estiver no projeto, configure `NODE_PATH`
+e não acessa campanhas, dados ou perfis pessoais. No Windows, os testes usam
+`C:/Program Files/Google/Chrome/Application/chrome.exe` quando ele existe; nos
+demais sistemas, o Chromium do Playwright. Use `SPLIT_CHROME_PATH` para outro caminho. Se Playwright não estiver no projeto, configure `NODE_PATH`
 para a pasta que contém o pacote.
 
 O teste cobre download real de `.split`, recuperação após recarga, transferência
