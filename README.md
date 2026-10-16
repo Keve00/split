@@ -11,16 +11,31 @@ Editor web para transformar imagens, textos, logos, ofertas e botões em peças 
 
 ## Executar localmente
 
-O app é estático e não tem etapa de build. Com **Node.js 22+**:
+O app é estático. Com **Node.js 22+**:
 
 ```sh
 git clone https://github.com/Keve00/split.git
 cd split
+npm ci
 npm start
 ```
 
-Abra http://127.0.0.1:8001. Também funciona com
-`python -m http.server 8000 --directory dist`.
+`npm start` gera a `dist/` e abre http://127.0.0.1:8001. A `dist/` publicada
+também funciona sem Node, por exemplo com `python -m http.server 8000 --directory dist`.
+
+## Desenvolver
+
+Edite apenas os arquivos de `src/`. A `dist/` é gerada a partir deles e fica
+no repositório para o GitHub Pages:
+
+```sh
+npm run build        # gera a dist/ (remove espaços de JS e CSS, sem renomear nada)
+npm run format       # formata src/ com Prettier
+npm test             # testes de lógica sobre a dist/
+```
+
+Faça commit de `src/` e `dist/` juntos. A CI recusa um pull request em que a
+`dist/` não corresponda à `src/` ou em que a `src/` não esteja formatada.
 
 Os vídeos MP4 são gerados no próprio navegador (WebCodecs + Mediabunny), sem
 servidor, chave de API ou LLM. Use Chrome ou Edge atualizado.
@@ -55,7 +70,7 @@ A geração de layouts e as adaptações de fundo acontecem no navegador, com al
 
 ## Estrutura
 
-A interface está em `dist/`; servidores de apoio ficam em `server/` e os testes em `tests/` (`npm test`):
+O código-fonte está em `src/` e a versão publicada, gerada por `scripts/build.mjs`, em `dist/`. Servidores de apoio ficam em `server/` e os testes em `tests/` (`npm test`):
 
 - `index.html`, `styles.css`, `workspace.css`: interface e temas.
 - `app.js`, `editing.js`, `rotation.js`, `alignment.js`: canvas e edição.
@@ -71,13 +86,13 @@ A interface está em `dist/`; servidores de apoio ficam em `server/` e os testes
 
 ## Hospedagem estática
 
-Publique o conteúdo de `dist/` em qualquer hospedagem estática. Não há etapa de compilação.
+Publique o conteúdo de `dist/` em qualquer hospedagem estática.
 
-O GitHub Pages já está ativo em https://keve00.github.io/split/. O workflow `.github/workflows/pages.yml` roda os testes em cada pull request e, quando o app muda na branch `main`, testa e publica `dist/`. Na publicação, `?v=dev` nos arquivos do `index.html` vira o hash do commit, para os navegadores não usarem versões antigas em cache. Também é possível iniciar uma publicação manual pela aba Actions.
+O GitHub Pages já está ativo em https://keve00.github.io/split/. O workflow `.github/workflows/pages.yml` confere formatação, build e testes em cada pull request e, quando o app muda na branch `main`, testa e publica `dist/`. Na publicação, `?v=dev` nos arquivos do `index.html` vira o hash do commit, para os navegadores não usarem versões antigas em cache. Também é possível iniciar uma publicação manual pela aba Actions.
 
 ## Recursos de terceiros
 
-- Figtree: `dist/fonts/OFL.txt`.
-- OpenCV: `dist/vendor/OpenCV-LICENSE.txt`.
+- Figtree: `src/fonts/OFL.txt`.
+- OpenCV: `src/vendor/OpenCV-LICENSE.txt`.
 
 Versão inicial deste repositório: código publicado no Split em 8 de outubro de 2026.

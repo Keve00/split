@@ -5,6 +5,8 @@ on:
     branches: [main]
     paths:
       - "dist/**"
+      - "src/**"
+      - "scripts/**"
       - "server/**"
       - "tests/**"
       - ".github/workflows/pages.yml"
@@ -26,6 +28,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
+      - name: Instalar ferramentas
+        run: npm ci --omit=optional
+      - name: Conferir formatação e build
+        run: |
+          npm run format:check
+          npm run check:dist
       - name: Rodar testes
         run: node tests/validate.cjs
 

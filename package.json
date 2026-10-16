@@ -4,7 +4,11 @@
   "private": true,
   "description": "Split Studio: anúncios em vários formatos, editados e exportados no navegador",
   "scripts": {
-    "start": "node server/static-server.cjs",
+    "build": "node scripts/build.mjs",
+    "check:dist": "node scripts/build.mjs --check",
+    "format": "prettier --write \"src/*.{js,css,html}\" scripts",
+    "format:check": "prettier --check \"src/*.{js,css,html}\" scripts",
+    "start": "npm run build && node server/static-server.cjs",
     "preview": "node server/static-server.cjs",
     "test": "node tests/validate.cjs",
     "test:full": "node tests/validate.cjs --full",
@@ -20,5 +24,9 @@
   },
   "optionalDependencies": {
     "hyperframes": "0.8.150"
+  },
+  "devDependencies": {
+    "esbuild": "0.25.9",
+    "prettier": "3.6.2"
   }
 }
