@@ -14,7 +14,7 @@ async function save(page){const wait=page.waitForEvent('download');await page.lo
 async function exportOne(page){const wait=page.waitForEvent('download');await page.locator('#downloadOne').click();assert.equal(await (await wait).failure(),null);await page.evaluate(()=>SplitMemory.settled());}
 (async()=>{
  await new Promise(resolve=>server.listen(0,'127.0.0.1',resolve));const url='http://127.0.0.1:'+server.address().port;
- const browser=await chromium.launch({headless:true,executablePath:process.env.SPLIT_CHROME_PATH||'C:/Program Files/Google/Chrome/Application/chrome.exe'}),errors=[],failures=[];
+ const browser=await chromium.launch({headless:true,executablePath:process.env.SPLIT_CHROME_PATH||(fs.existsSync('C:/Program Files/Google/Chrome/Application/chrome.exe')?'C:/Program Files/Google/Chrome/Application/chrome.exe':undefined)}),errors=[],failures=[];
  async function pageFor(context){const p=await context.newPage();p.on('pageerror',e=>errors.push(e.message));p.on('requestfailed',r=>failures.push(r.url()));await p.goto(url);await p.evaluate(()=>SplitProjects.initialized);await p.evaluate(()=>SplitMemory.generalInitialized);return p;}
  const recalculate=p=>p.evaluate(()=>$('rearrange').onclick());
  const geometry=p=>p.evaluate(()=>({x:current().layers[0].x,manual:current().layers[0].manualLayout,model:SplitMemory.snapshot().preferences.entries.find(e=>e.metric==='x'&&e.context.role==='logo'&&e.context.ratio===0)}));

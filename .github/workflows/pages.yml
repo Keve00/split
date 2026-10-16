@@ -5,7 +5,10 @@ on:
     branches: [main]
     paths:
       - "dist/**"
+      - "server/**"
+      - "tests/**"
       - ".github/workflows/pages.yml"
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -13,13 +16,26 @@ permissions:
   pages: write
   id-token: write
 
-concurrency:
-  group: github-pages
-  cancel-in-progress: false
-
 jobs:
-  deploy:
+  test:
     runs-on: ubuntu-latest
+    steps:
+      - name: Obter código
+        uses: actions/checkout@v4
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Rodar testes
+        run: node tests/validate.cjs
+
+  deploy:
+    needs: test
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
@@ -32,6 +48,8 @@ jobs:
         run: |
           test -f dist/index.html
           touch dist/.nojekyll
+          # Troca ?v=dev pelo commit publicado para o navegador buscar arquivos novos.
+          sed -i "s/?v=dev/?v=${GITHUB_SHA::8}/g" dist/index.html
       - name: Enviar app
         uses: actions/upload-pages-artifact@v3
         with:
