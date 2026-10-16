@@ -297,6 +297,14 @@
         </section>
       </aside>
       <main>
+        <nav id="flowSteps" class="flow-steps" aria-label="Etapas da campanha"><ol></ol></nav>
+        <div id="reviewBanner" class="review-banner" role="note" hidden>
+          <div>
+            <strong>Modo de revisão</strong>
+            <p>No celular, você vê as peças e baixa os PNGs. Para editar, use um computador.</p>
+          </div>
+          <button id="editOnPhone" type="button" class="text-button">Editar mesmo assim</button>
+        </div>
         <div id="recoveryBanner" class="recovery-banner" hidden>
           <div>
             <strong>Retomar sua campanha?</strong>
@@ -541,7 +549,8 @@
             <div class="stage-footer">
               <span id="canvasSize"></span>
               <div class="composition-caption">
-                <strong id="compositionInfo"></strong><span id="compositionNotice"></span>
+                <strong id="compositionInfo"></strong><span id="compositionNotice"></span
+                ><span id="legibilityNotice" class="legibility-notice" role="status" hidden></span>
               </div>
             </div>
           </div>
@@ -1016,5 +1025,6 @@
     <script src="video-browser-render.js?v=dev"></script>
     <script src="video-studio.js?v=dev"></script>
     <script src="interface.js?v=dev"></script>
+    <script src="flow.js?v=dev"></script>
   </body>
 </html>

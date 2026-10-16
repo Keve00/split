@@ -838,6 +838,7 @@ function renderCards() {
   for (const out of outputs) {
     const card = document.createElement('article');
     card.className = 'output-card';
+    card.dataset.format = out.id;
     const preview = document.createElement('button');
     preview.className = 'preview';
     preview.setAttribute('aria-label', `Editar ${out.name}`);

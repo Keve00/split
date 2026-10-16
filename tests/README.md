@@ -17,6 +17,7 @@ node tests/memory-browser.cjs
 node tests/preferences-browser.cjs
 node tests/learning-layout-browser.cjs
 node tests/evaluation-browser.cjs
+node tests/flow-browser.cjs
 node tests/video-studio-browser.cjs
 node tests/video-render-browser.cjs
 ```

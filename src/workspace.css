@@ -1831,3 +1831,154 @@ body[data-view='grid'] #layerCount {
 #rotationControls {
   order: 4;
 }
+
+/* Etapas da campanha: progresso visível e atalho para cada etapa. */
+:root {
+  --warn: #a15c00;
+  --warn-soft: #fff3df;
+}
+:root[data-theme='dark'] {
+  --warn: #f0b45a;
+  --warn-soft: #3a2a12;
+}
+.flow-steps {
+  margin: 0 0 12px;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+.flow-steps ol {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  min-width: max-content;
+}
+.flow-step {
+  flex: 1 1 0;
+  min-width: 132px;
+}
+.flow-step button {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+  text-align: left;
+}
+.flow-step button:hover {
+  border-color: var(--muted);
+}
+.flow-number {
+  display: grid;
+  place-items: center;
+  flex: 0 0 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.flow-step strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.flow-step small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  white-space: nowrap;
+}
+.flow-step.is-done .flow-number {
+  background: var(--paper);
+  color: var(--ink);
+}
+.flow-step.is-current button {
+  border-color: var(--orange);
+  box-shadow: inset 0 0 0 1px var(--orange);
+}
+.flow-step.is-current .flow-number {
+  background: var(--orange);
+  border-color: var(--orange);
+  color: #fff;
+}
+.flow-step.is-optional button {
+  border-style: dashed;
+}
+.flow-step.has-warning small {
+  color: var(--warn);
+}
+
+/* Alertas de legibilidade nos cards e no editor. */
+.card-footer .card-alerts {
+  display: inline-block;
+  margin-top: 5px;
+  padding: 2px 7px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-size: 11px;
+  font-weight: 600;
+  min-height: 0;
+}
+.card-footer .card-alerts:hover {
+  filter: brightness(0.97);
+}
+.legibility-notice {
+  color: var(--warn);
+  font-weight: 500;
+}
+
+/* Modo de revisão no celular: ver as peças e baixar, sem as ferramentas de edição. */
+.review-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 12px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--white);
+}
+.review-banner strong {
+  font-size: 14px;
+}
+.review-banner p {
+  margin-top: 4px;
+  font-size: 13px;
+  color: var(--muted);
+  line-height: 1.5;
+}
+.review-banner .text-button {
+  flex-shrink: 0;
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+body.review-mode .panel-dock,
+body.review-mode .view-tabs,
+body.review-mode #flowSteps,
+body.review-mode #planLayout,
+body.review-mode #openVideoStudio,
+body.review-mode #generate,
+body.review-mode #densitySettings {
+  display: none !important;
+}
+body.review-mode .output-card .preview {
+  cursor: default;
+}
+@media (max-width: 760px) {
+  .review-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

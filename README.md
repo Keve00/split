@@ -46,11 +46,14 @@ servidor, chave de API ou LLM. Use Chrome ou Edge atualizado.
 2. Selecione formatos de saída; cadastre tamanhos personalizados e salve seleções em perfis.
 3. Clique em **Gerar composições** e ajuste os diagramas de posição para peças horizontais, superhorizontais, verticais e superverticais.
 4. Edite cada peça: mova, redimensione proporcionalmente, gire, agrupe, alinhe, oculte e bloqueie camadas. Use Ctrl+Z para desfazer.
-5. Ajuste o fundo, o foco e seu zoom. Exporte um PNG ou todos os formatos em ZIP.
-6. Abra **Vídeos** para animar as camadas e baixar um MP4 por formato. Detalhes em [docs/VIDEO-STUDIO.md](docs/VIDEO-STUDIO.md).
-7. Salve um arquivo `.split` para guardar imagens, formatos, diagramas e ajustes da campanha.
+5. Siga a trilha de etapas acima das peças: ela mostra o que falta e leva ao painel certo. Peças com texto menor que 10 px, elementos fora da peça ou sobreposições recebem um alerta no card e no editor.
+6. Ajuste o fundo, o foco e seu zoom. Exporte um PNG ou todos os formatos em ZIP.
+7. Abra **Vídeos** para animar as camadas e baixar um MP4 por formato. Detalhes em [docs/VIDEO-STUDIO.md](docs/VIDEO-STUDIO.md).
+8. Salve um arquivo `.split` para guardar imagens, formatos, diagramas e ajustes da campanha.
 
 A geração de layouts e as adaptações de fundo acontecem no navegador, com algoritmos locais e OpenCV. Não utilizam LLMs ou modelos de geração de imagens.
+
+No celular, o Split abre em modo de revisão: mostra as peças e baixa cada PNG. **Editar mesmo assim** libera o editor completo até fechar a aba.
 
 ## Dados e exportação
 
@@ -80,6 +83,7 @@ O código-fonte está em `src/` e a versão publicada, gerada por `scripts/build
 - `output-density.js`: densidade DPI dos PNGs.
 - `video-studio.js`, `video-composition.js`, `video-animation.js`: autoria, prévia e contrato de vídeo.
 - `video-browser-render.js`: codificação do MP4 no navegador.
+- `interface.js`, `flow.js`: estado do botão Gerar, trilha de etapas, alertas de legibilidade e modo de revisão no celular.
 - `server/static-server.cjs`: servidor de desenvolvimento (`npm start`).
 - `server/video-server.cjs`: servidor opcional para renderizar o projeto Hyperframes exportado (`npm run hyperframes-server`; requer FFmpeg). A interface não depende dele.
 - `fonts/` e `vendor/`: fontes Figtree e OpenCV, com suas licenças.
