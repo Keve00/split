@@ -70,7 +70,7 @@ globalThis.SplitFormatProfiles = (() => {
       row.append(button, remove);
       holder.append(row);
     }
-    $('profileEmpty').hidden = profiles.length > 0;
+    $('profileHeading').hidden = !profiles.length;
   }
   function save(name = $('formatProfileName').value) {
     name = String(name).trim();
@@ -115,10 +115,10 @@ globalThis.SplitFormatProfiles = (() => {
           id: `custom-${++customSequence}`,
           name: `Personalizado ${size.w} × ${size.h}`,
           ...size,
-          group: 'CUSTOM',
+          group: CUSTOM_GROUP,
           custom: true
         };
-        FORMATS.push(format);
+        placeInGroup(format);
       }
       checked.push(format.id);
     }

@@ -1033,9 +1033,6 @@ summary:focus-visible {
     width: 100%;
     justify-content: flex-start;
   }
-  .editor-actions #downloadOne {
-    margin-left: auto;
-  }
   .canvas-toolbars {
     gap: 8px;
     align-items: flex-start;
@@ -1989,4 +1986,393 @@ body.review-mode .output-card .preview {
     flex-direction: column;
     align-items: flex-start;
   }
+}
+
+/* Format groups: a header per channel with select-all, a count and a menu; actions show on hover. */
+.formats {
+  gap: 10px;
+}
+.format-group-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 2px 0 2px 5px;
+}
+.format-group-head input {
+  accent-color: var(--orange);
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  flex-shrink: 0;
+}
+button.format-group-name {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-align: left;
+}
+button.format-group-name:hover {
+  background: none;
+}
+.format-group-name span {
+  overflow-wrap: anywhere;
+}
+.format-group-name::after {
+  content: '';
+  width: 5px;
+  height: 5px;
+  margin-left: auto;
+  align-self: center;
+  border-right: 1.5px solid var(--muted);
+  border-bottom: 1.5px solid var(--muted);
+  transform: rotate(45deg);
+  transition: transform 0.15s;
+}
+.format-group-name[aria-expanded='false']::after {
+  transform: rotate(-45deg);
+}
+.format-group-count {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.format-group-items {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.format-group-items .format-entry {
+  padding-left: 14px;
+}
+.format-group-items .format-option:has(input:checked) {
+  background: transparent;
+}
+.format-group-items .format-option:hover {
+  background: var(--paper);
+}
+button.format-more {
+  flex-shrink: 0;
+  width: 26px;
+  min-height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 16px;
+  line-height: 1;
+  opacity: 0;
+}
+.format-entry:hover .format-more,
+.format-group-head:hover .format-more,
+.format-more:focus-visible,
+.format-more[aria-expanded='true'] {
+  opacity: 1;
+}
+button.format-more:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+@media (hover: none) {
+  button.format-more {
+    opacity: 1;
+  }
+}
+.format-entry .format-more {
+  align-self: center;
+}
+.format-menu {
+  position: fixed;
+  top: 0;
+  right: auto;
+  gap: 2px;
+  padding: 6px;
+  min-width: 200px;
+  max-width: 260px;
+  max-height: calc(100vh - 16px);
+  overflow: auto;
+}
+.format-menu hr {
+  width: 100%;
+  margin: 4px 0;
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+.menu-label {
+  margin: 4px 8px 2px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.menu-surface > button.danger-item {
+  color: #b34333;
+}
+.menu-form {
+  display: flex;
+  gap: 6px;
+  padding: 4px;
+}
+.menu-form input {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 8px;
+  font-size: 13px;
+}
+.menu-form button {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+/* The overview groups pieces under a heading per format group. */
+.cards-group {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--line);
+}
+.cards-group:not(:first-child) {
+  margin-top: 12px;
+}
+.cards-group h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 600;
+}
+.cards-group small {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--muted);
+}
+button.cards-group-zip {
+  padding: 4px 0;
+  font-size: 13px;
+}
+
+/* Adding sizes: suggested sizes per channel first, then a custom size. */
+.add-sizes[open] {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-bottom: 12px;
+}
+.size-catalog {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.size-catalog-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+.size-catalog-head strong {
+  font-size: 12px;
+  font-weight: 600;
+}
+.size-catalog-head .text-button {
+  padding: 0;
+  font-size: 12px;
+}
+.size-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+button.size-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  padding: 5px 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.size-chip small {
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--muted);
+}
+button.size-chip.is-added {
+  background: var(--paper);
+  border-color: transparent;
+}
+button.size-chip.is-added {
+  color: var(--muted);
+}
+.custom-format h4 {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.format-profiles {
+  padding-top: 4px;
+  border-top: 1px solid var(--line);
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+.format-profiles h3 {
+  font-size: 12px;
+}
+button.demo-button {
+  align-self: flex-start;
+  font-size: 12px;
+}
+
+/* Elements: images to upload, then editable texts, each under a short heading. */
+.panel-subhead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 8px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+}
+.panel-subhead:not(:first-child) {
+  margin-top: 4px;
+}
+.panel-subhead small {
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--muted);
+}
+.panel-body .add-grid.image-grid,
+.panel-body .add-grid.text-grid {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 6px;
+  margin: 0;
+}
+.add-grid.image-grid > .asset-control,
+.add-grid.image-grid > .asset-control > .asset-button {
+  height: 40px;
+  min-height: 40px;
+}
+.add-grid.image-grid > .asset-control > .asset-button,
+.add-grid.text-grid > button {
+  justify-content: center;
+  text-align: center;
+  padding: 6px 4px;
+  font-size: 13px;
+}
+.add-grid.text-grid > button,
+.add-grid.text-grid > #addText {
+  min-height: 36px;
+  background: transparent;
+}
+
+/* Header: one filled action; the secondary tools stay quiet until hovered. */
+.generation-bar > #openVideoStudio,
+.generation-bar > #planLayout {
+  min-height: 34px;
+  padding: 7px 10px;
+  font-size: 13px;
+  border-color: transparent;
+  background: transparent;
+}
+.generation-bar > #openVideoStudio:hover,
+.generation-bar > #planLayout:hover,
+.project-actions button:hover,
+.theme-toggle:hover {
+  background: var(--paper);
+}
+.project-actions button {
+  white-space: nowrap;
+}
+[data-theme='dark'] .layer-toggle {
+  border-color: transparent;
+}
+[data-theme='dark'] .layer-toggle:hover {
+  background: var(--paper);
+}
+
+/* Editor: one toolbar holds the piece, zoom, alignment and actions; the steps return in the overview. */
+body[data-view='edit'] #flowSteps {
+  display: none;
+}
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.editor-toolbar {
+  justify-content: flex-start;
+}
+.editor-toolbar #activeFormat {
+  flex: 0 1 150px;
+}
+.editor-toolbar > .canvas-toolbars {
+  flex: 0 1 auto;
+  gap: 6px 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.editor-toolbar > .editor-actions {
+  margin-left: auto;
+}
+.zoom-toolbar label {
+  font-size: 0;
+}
+.zoom-toolbar select {
+  width: 112px;
+}
+.editor-toolbar .alignment-toolbar .section-line {
+  display: none;
+}
+.editor-toolbar .alignment-toolbar {
+  padding-left: 8px;
+  border-left: 1px solid var(--line);
+}
+body:not([data-view='edit']) #downloadOne {
+  display: none;
+}
+.workspace-toolbar #downloadOne {
+  font-size: 12px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+}
+
+/* Layer actions fit one row of icons; the name stays in the tooltip and for screen readers. */
+.panel-body .selection-actions {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 2px;
+}
+.selection-actions button {
+  min-height: 32px;
+  padding: 6px 0;
+  border-color: transparent;
+}
+.selection-actions button:hover:enabled {
+  background: var(--paper);
+}
+.selection-actions button span {
+  display: none;
+}
+.selection-actions #removeLayers {
+  border-left: 1px solid var(--line);
+  border-radius: 0 6px 6px 0;
 }

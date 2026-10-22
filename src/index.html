@@ -125,37 +125,38 @@
             </button>
           </header>
           <div class="panel-body">
-            <div class="add-grid">
+            <h3 class="panel-subhead">Imagens <small>PNG transparente preserva o recorte</small></h3>
+            <div class="add-grid image-grid">
               <div class="asset-control">
-                <button id="addBackground" class="asset-button"><span>▧ Fundo</span></button
+                <button id="addBackground" class="asset-button"><span>Fundo</span></button
                 ><button type="button" id="backgroundUploadBadge" class="upload-badge" hidden></button>
               </div>
               <div class="asset-control">
-                <button id="addOffer" class="asset-button">
-                  <span>▧ Oferta<small>(imagem)</small></span></button
-                ><button type="button" id="offerUploadBadge" class="upload-badge" hidden></button>
-              </div>
-              <div class="asset-control">
-                <button id="addImage" class="asset-button"><span>▧ Imagem</span></button
+                <button id="addImage" class="asset-button"><span>Imagem</span></button
                 ><button type="button" id="imageUploadBadge" class="upload-badge" hidden></button>
               </div>
               <div class="asset-control">
-                <button id="addLogo" class="asset-button"><span>▧ Logo</span></button
+                <button id="addLogo" class="asset-button"><span>Logo</span></button
                 ><button type="button" id="logoUploadBadge" class="upload-badge" hidden></button>
               </div>
               <div class="asset-control">
-                <button id="addTextImage" class="asset-button">
-                  <span>▧ Texto<small>(imagem)</small></span></button
+                <button id="addOffer" class="asset-button"><span>Oferta</span></button
+                ><button type="button" id="offerUploadBadge" class="upload-badge" hidden></button>
+              </div>
+              <div class="asset-control">
+                <button id="addTextImage" class="asset-button"><span>Texto</span></button
                 ><button type="button" id="textUploadBadge" class="upload-badge" hidden></button>
               </div>
               <div class="asset-control">
-                <button id="addText" class="asset-button"><span>T Texto</span></button>
-              </div>
-              <div class="asset-control">
-                <button id="addCTA" class="asset-button">
-                  <span>▧ Botão<small>(imagem)</small></span></button
+                <button id="addCTA" class="asset-button"><span>Botão</span></button
                 ><button type="button" id="ctaUploadBadge" class="upload-badge" hidden></button>
               </div>
+            </div>
+            <h3 class="panel-subhead">Textos editáveis</h3>
+            <div class="add-grid text-grid">
+              <button id="addText" type="button">Texto</button
+              ><button id="addOfferText" type="button">Oferta</button
+              ><button id="addCTAText" type="button">Botão</button>
             </div>
             <div id="uploadedImagesPanels" class="asset-panels" hidden>
               <details id="backgroundAccordion" class="asset-accordion" hidden>
@@ -183,14 +184,6 @@
                 <div id="ctaFiles" class="asset-files" hidden></div>
               </details>
             </div>
-            <p class="hint asset-hint">Use PNG transparente para preservar o recorte das imagens.</p>
-            <details class="text-elements">
-              <summary>Oferta e botão em texto</summary>
-              <div class="add-grid">
-                <button id="addOfferText">% Oferta em texto</button
-                ><button id="addCTAText">T Botão em texto</button>
-              </div>
-            </details>
             <input type="file" id="elementFile" accept="image/png,image/jpeg,image/webp" hidden />
             <div id="backgroundInfo" class="background-info" hidden>
               <strong id="backgroundName"></strong
@@ -198,15 +191,14 @@
               <p class="hint">O fundo é adaptado automaticamente, preservando a proporção da imagem.</p>
             </div>
             <input type="file" id="backgroundFile" accept="image/png,image/jpeg,image/webp" hidden />
-            <label id="solidBgField" class="field color-field"
-              >Fundo chapado<span class="background-color-chip" style="background-color: #f4eee8"
+            <label id="solidBgField" class="field color-field" title="Usada quando não há imagem de fundo"
+              >Cor de fundo<span class="background-color-chip" style="background-color: #f4eee8"
                 ><input
                   id="defaultBgColor"
                   type="color"
                   value="#f4eee8"
                   aria-label="Cor de fundo chapado" /></span
             ></label>
-            <p id="solidBgHint" class="hint">Usada quando não há imagem de fundo.</p>
           </div>
           <button
             class="panel-resize"
@@ -229,32 +221,12 @@
             </button>
           </header>
           <div class="panel-body">
-            <div class="format-profiles">
-              <h3>Perfis de formatos</h3>
-              <div id="formatProfiles" class="format-profile-list"></div>
-              <p id="profileEmpty" class="hint">Selecione os tamanhos abaixo e salve um perfil.</p>
-              <details id="saveFormatProfileDetails" class="quiet-disclosure">
-                <summary>Salvar seleção como perfil</summary>
-                <form id="formatProfileForm" class="profile-form">
-                  <label class="field"
-                    >Nome do perfil<input
-                      id="formatProfileName"
-                      type="text"
-                      maxlength="60"
-                      placeholder="Rede Social, Banner app…"
-                      required
-                  /></label>
-                  <p class="hint">
-                    Use o mesmo nome para atualizar um perfil. Perfis ficam salvos neste navegador.
-                  </p>
-                  <button type="submit">Salvar perfil</button>
-                </form>
-              </details>
-            </div>
             <div id="formats" class="formats"></div>
-            <details class="quiet-disclosure">
-              <summary>Tamanho personalizado</summary>
+            <details id="addSizes" class="quiet-disclosure add-sizes">
+              <summary>＋ Adicionar tamanhos</summary>
+              <div id="sizeCatalog" class="size-catalog"></div>
               <form id="customFormatForm" class="custom-format">
+                <h4>Tamanho personalizado</h4>
                 <div class="prop-grid">
                   <label class="field"
                     >Largura (px)<input
@@ -276,17 +248,51 @@
                       required
                   /></label>
                 </div>
-                <button type="submit">＋ Adicionar tamanho</button>
+                <label class="field"
+                  >Nome<input
+                    id="customName"
+                    type="text"
+                    maxlength="60"
+                    placeholder="Opcional · ex.: Capa do e-mail"
+                /></label>
+                <label class="field"
+                  >Grupo<input
+                    id="customGroup"
+                    type="text"
+                    maxlength="30"
+                    list="formatGroupNames"
+                    placeholder="Personalizados"
+                /></label>
+                <datalist id="formatGroupNames"></datalist>
+                <button type="submit">Adicionar tamanho</button>
                 <p class="hint">De 32 a 4096 px por lado · até 16 megapixels.</p>
                 <button id="restoreFormats" type="button" class="text-button">
                   Restaurar formatos padrão
                 </button>
               </form>
             </details>
-            <p class="hint">
-              A composição considera a proporção das imagens, a legibilidade e o espaço disponível.
-            </p>
-            <button id="demo" class="demo-button">Experimentar com um exemplo</button>
+            <div class="format-profiles">
+              <h3 id="profileHeading">Perfis salvos</h3>
+              <div id="formatProfiles" class="format-profile-list"></div>
+              <details id="saveFormatProfileDetails" class="quiet-disclosure">
+                <summary>Salvar seleção como perfil</summary>
+                <form id="formatProfileForm" class="profile-form">
+                  <label class="field"
+                    >Nome do perfil<input
+                      id="formatProfileName"
+                      type="text"
+                      maxlength="60"
+                      placeholder="Lançamento, Black Friday…"
+                      required
+                  /></label>
+                  <p class="hint">
+                    Use o mesmo nome para atualizar um perfil. Perfis ficam salvos neste navegador.
+                  </p>
+                  <button type="submit">Salvar perfil</button>
+                </form>
+              </details>
+            </div>
+            <button id="demo" class="text-button demo-button">Experimentar com um exemplo</button>
           </div>
           <button
             class="panel-resize"
@@ -347,7 +353,8 @@
               <p class="hint">Vale para o PNG individual e para os arquivos do ZIP.</p>
             </div>
           </details>
-          <button id="exportAll" class="dark-button" disabled>Baixar todos · ZIP</button>
+          <button id="downloadOne" type="button" title="Baixar a peça em edição">Baixar PNG</button
+          ><button id="exportAll" class="dark-button" disabled>Baixar todos · ZIP</button>
         </div>
         <div id="overview" class="overview">
           <div id="empty" class="empty">
@@ -374,6 +381,140 @@
           <div class="stage-area">
             <div class="editor-toolbar">
               <select id="activeFormat" aria-label="Formato em edição"></select>
+              <div class="canvas-toolbars">
+                <div class="zoom-toolbar" aria-label="Navegação da peça">
+                  <button id="zoomOut" title="Diminuir zoom" aria-label="Diminuir zoom">−</button
+                  ><label
+                    >Zoom<select id="zoomLevel" aria-label="Escala de visualização">
+                      <option value="fit">Ajustar à tela</option>
+                      <option id="zoomCurrent" hidden></option>
+                      <option value="0.1">10%</option>
+                      <option value="0.25">25%</option>
+                      <option value="0.5">50%</option>
+                      <option value="0.75">75%</option>
+                      <option value="1">100%</option>
+                      <option value="1.5">150%</option>
+                      <option value="2">200%</option>
+                      <option value="3">300%</option>
+                      <option value="4">400%</option>
+                      <option value="6">600%</option>
+                      <option value="8">800%</option>
+                      <option value="12">1200%</option>
+                      <option value="16">1600%</option>
+                    </select></label
+                  ><button id="zoomIn" title="Aumentar zoom" aria-label="Aumentar zoom">+</button
+                  ><button id="zoomFit" hidden>Ajustar</button
+                  ><button id="zoomActual" title="Um pixel da peça por pixel de tela" hidden>100%</button>
+                </div>
+                <div
+                  id="alignmentControls"
+                  class="alignment-controls alignment-toolbar"
+                  role="group"
+                  aria-label="Alinhamento da seleção"
+                >
+                  <div class="section-line"><h3>Alinhar</h3></div>
+                  <div class="alignment-grid">
+                    <button
+                      id="align-left"
+                      type="button"
+                      title="Alinhar: Esquerda"
+                      aria-label="Alinhar: Esquerda"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M4 3v18M8 7h12M8 17h8"></path></svg
+                      ><span>Esquerda</span></button
+                    ><button
+                      id="align-centerX"
+                      type="button"
+                      title="Alinhar: Centro horizontal"
+                      aria-label="Alinhar: Centro horizontal"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3v18M5 7h14M7 17h10"></path></svg
+                      ><span>Centro horizontal</span></button
+                    ><button
+                      id="align-right"
+                      type="button"
+                      title="Alinhar: Direita"
+                      aria-label="Alinhar: Direita"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 3v18M4 7h12M8 17h8"></path></svg
+                      ><span>Direita</span></button
+                    ><button
+                      id="align-top"
+                      type="button"
+                      title="Alinhar: Topo"
+                      aria-label="Alinhar: Topo"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M3 4h18M7 8v12M17 8v8"></path></svg
+                      ><span>Topo</span></button
+                    ><button
+                      id="align-centerY"
+                      type="button"
+                      title="Alinhar: Centro vertical"
+                      aria-label="Alinhar: Centro vertical"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 12h18M7 5v14M17 7v10"></path></svg
+                      ><span>Centro vertical</span></button
+                    ><button
+                      id="align-bottom"
+                      type="button"
+                      title="Alinhar: Base"
+                      aria-label="Alinhar: Base"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 20h18M7 4v12M17 8v8"></path></svg
+                      ><span>Base</span>
+                    </button>
+                  </div>
+                  <div class="distribution-grid">
+                    <button
+                      id="align-distributeX"
+                      type="button"
+                      title="Distribuir horizontalmente"
+                      aria-label="Distribuir horizontalmente"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 5v14M21 5v14M9 8h6v8H9z"></path></svg
+                      ><span>Distribuir horizontalmente</span></button
+                    ><button
+                      id="align-distributeY"
+                      type="button"
+                      title="Distribuir verticalmente"
+                      aria-label="Distribuir verticalmente"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 3h14M5 21h14M8 9h8v6H8z"></path></svg
+                      ><span>Distribuir verticalmente</span>
+                    </button>
+                  </div>
+                  <details class="tool-menu alignment-options">
+                    <summary>Opções</summary>
+                    <div class="menu-surface">
+                      <label class="field"
+                        >Referência<select id="alignReference">
+                          <option value="canvas">Peça inteira</option>
+                          <option value="selection">Área da seleção</option>
+                        </select></label
+                      ><label class="check-field"
+                        ><input id="alignMargin" type="checkbox" /> Respeitar margem de 5%</label
+                      >
+                      <p id="alignmentHint" class="hint">
+                        Selecione uma camada para alinhar. Grupos mantêm sua composição interna.
+                      </p>
+                    </div>
+                  </details>
+                </div>
+              </div>
               <div class="editor-actions">
                 <button
                   id="undo"
@@ -403,137 +544,6 @@
                       Usar como formato-base</button
                     ><button id="previewAdaptation">Adaptar formatos</button
                     ><button id="rearrange" title="Recalcular a composição deste formato">Reorganizar</button>
-                  </div>
-                </details>
-                <button id="downloadOne" title="Baixar formato">Baixar PNG</button>
-              </div>
-            </div>
-            <div class="canvas-toolbars">
-              <div class="zoom-toolbar" aria-label="Navegação da peça">
-                <button id="zoomOut" title="Diminuir zoom" aria-label="Diminuir zoom">−</button
-                ><label
-                  >Zoom<select id="zoomLevel" aria-label="Escala de visualização">
-                    <option value="fit">Ajustar à tela</option>
-                    <option id="zoomCurrent" hidden></option>
-                    <option value="0.1">10%</option>
-                    <option value="0.25">25%</option>
-                    <option value="0.5">50%</option>
-                    <option value="0.75">75%</option>
-                    <option value="1">100%</option>
-                    <option value="1.5">150%</option>
-                    <option value="2">200%</option>
-                    <option value="3">300%</option>
-                    <option value="4">400%</option>
-                    <option value="6">600%</option>
-                    <option value="8">800%</option>
-                    <option value="12">1200%</option>
-                    <option value="16">1600%</option>
-                  </select></label
-                ><button id="zoomIn" title="Aumentar zoom" aria-label="Aumentar zoom">+</button
-                ><button id="zoomFit" hidden>Ajustar</button
-                ><button id="zoomActual" title="Um pixel da peça por pixel de tela" hidden>100%</button>
-              </div>
-              <div
-                id="alignmentControls"
-                class="alignment-controls alignment-toolbar"
-                role="group"
-                aria-label="Alinhamento da seleção"
-              >
-                <div class="section-line"><h3>Alinhar</h3></div>
-                <div class="alignment-grid">
-                  <button
-                    id="align-left"
-                    type="button"
-                    title="Alinhar: Esquerda"
-                    aria-label="Alinhar: Esquerda"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M4 3v18M8 7h12M8 17h8"></path></svg
-                    ><span>Esquerda</span></button
-                  ><button
-                    id="align-centerX"
-                    type="button"
-                    title="Alinhar: Centro horizontal"
-                    aria-label="Alinhar: Centro horizontal"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M7 17h10"></path></svg
-                    ><span>Centro horizontal</span></button
-                  ><button
-                    id="align-right"
-                    type="button"
-                    title="Alinhar: Direita"
-                    aria-label="Alinhar: Direita"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M20 3v18M4 7h12M8 17h8"></path></svg
-                    ><span>Direita</span></button
-                  ><button
-                    id="align-top"
-                    type="button"
-                    title="Alinhar: Topo"
-                    aria-label="Alinhar: Topo"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M3 4h18M7 8v12M17 8v8"></path></svg
-                    ><span>Topo</span></button
-                  ><button
-                    id="align-centerY"
-                    type="button"
-                    title="Alinhar: Centro vertical"
-                    aria-label="Alinhar: Centro vertical"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M7 5v14M17 7v10"></path></svg
-                    ><span>Centro vertical</span></button
-                  ><button
-                    id="align-bottom"
-                    type="button"
-                    title="Alinhar: Base"
-                    aria-label="Alinhar: Base"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M7 4v12M17 8v8"></path></svg
-                    ><span>Base</span>
-                  </button>
-                </div>
-                <div class="distribution-grid">
-                  <button
-                    id="align-distributeX"
-                    type="button"
-                    title="Distribuir horizontalmente"
-                    aria-label="Distribuir horizontalmente"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true">
-                      <path d="M3 5v14M21 5v14M9 8h6v8H9z"></path></svg
-                    ><span>Distribuir horizontalmente</span></button
-                  ><button
-                    id="align-distributeY"
-                    type="button"
-                    title="Distribuir verticalmente"
-                    aria-label="Distribuir verticalmente"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true">
-                      <path d="M5 3h14M5 21h14M8 9h8v6H8z"></path></svg
-                    ><span>Distribuir verticalmente</span>
-                  </button>
-                </div>
-                <details class="tool-menu alignment-options">
-                  <summary>Opções</summary>
-                  <div class="menu-surface">
-                    <label class="field"
-                      >Referência<select id="alignReference">
-                        <option value="canvas">Peça inteira</option>
-                        <option value="selection">Área da seleção</option>
-                      </select></label
-                    ><label class="check-field"
-                      ><input id="alignMargin" type="checkbox" /> Respeitar margem de 5%</label
-                    >
-                    <p id="alignmentHint" class="hint">
-                      Selecione uma camada para alinhar. Grupos mantêm sua composição interna.
-                    </p>
                   </div>
                 </details>
               </div>
@@ -1018,6 +1028,7 @@
     <script src="projects.js?v=dev"></script>
     <script src="workspace.js?v=dev"></script>
     <script src="format-profiles.js?v=dev"></script>
+    <script src="format-groups.js?v=dev"></script>
     <script src="background-menu.js?v=dev"></script>
     <script src="output-density.js?v=dev"></script>
     <script src="blueprint.js?v=dev"></script>
