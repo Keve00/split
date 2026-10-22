@@ -353,7 +353,8 @@
               <p class="hint">Vale para o PNG individual e para os arquivos do ZIP.</p>
             </div>
           </details>
-          <button id="exportAll" class="dark-button" disabled>Baixar todos · ZIP</button>
+          <button id="downloadOne" type="button" title="Baixar a peça em edição">Baixar PNG</button
+          ><button id="exportAll" class="dark-button" disabled>Baixar todos · ZIP</button>
         </div>
         <div id="overview" class="overview">
           <div id="empty" class="empty">
@@ -380,6 +381,140 @@
           <div class="stage-area">
             <div class="editor-toolbar">
               <select id="activeFormat" aria-label="Formato em edição"></select>
+              <div class="canvas-toolbars">
+                <div class="zoom-toolbar" aria-label="Navegação da peça">
+                  <button id="zoomOut" title="Diminuir zoom" aria-label="Diminuir zoom">−</button
+                  ><label
+                    >Zoom<select id="zoomLevel" aria-label="Escala de visualização">
+                      <option value="fit">Ajustar à tela</option>
+                      <option id="zoomCurrent" hidden></option>
+                      <option value="0.1">10%</option>
+                      <option value="0.25">25%</option>
+                      <option value="0.5">50%</option>
+                      <option value="0.75">75%</option>
+                      <option value="1">100%</option>
+                      <option value="1.5">150%</option>
+                      <option value="2">200%</option>
+                      <option value="3">300%</option>
+                      <option value="4">400%</option>
+                      <option value="6">600%</option>
+                      <option value="8">800%</option>
+                      <option value="12">1200%</option>
+                      <option value="16">1600%</option>
+                    </select></label
+                  ><button id="zoomIn" title="Aumentar zoom" aria-label="Aumentar zoom">+</button
+                  ><button id="zoomFit" hidden>Ajustar</button
+                  ><button id="zoomActual" title="Um pixel da peça por pixel de tela" hidden>100%</button>
+                </div>
+                <div
+                  id="alignmentControls"
+                  class="alignment-controls alignment-toolbar"
+                  role="group"
+                  aria-label="Alinhamento da seleção"
+                >
+                  <div class="section-line"><h3>Alinhar</h3></div>
+                  <div class="alignment-grid">
+                    <button
+                      id="align-left"
+                      type="button"
+                      title="Alinhar: Esquerda"
+                      aria-label="Alinhar: Esquerda"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M4 3v18M8 7h12M8 17h8"></path></svg
+                      ><span>Esquerda</span></button
+                    ><button
+                      id="align-centerX"
+                      type="button"
+                      title="Alinhar: Centro horizontal"
+                      aria-label="Alinhar: Centro horizontal"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M12 3v18M5 7h14M7 17h10"></path></svg
+                      ><span>Centro horizontal</span></button
+                    ><button
+                      id="align-right"
+                      type="button"
+                      title="Alinhar: Direita"
+                      aria-label="Alinhar: Direita"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M20 3v18M4 7h12M8 17h8"></path></svg
+                      ><span>Direita</span></button
+                    ><button
+                      id="align-top"
+                      type="button"
+                      title="Alinhar: Topo"
+                      aria-label="Alinhar: Topo"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M3 4h18M7 8v12M17 8v8"></path></svg
+                      ><span>Topo</span></button
+                    ><button
+                      id="align-centerY"
+                      type="button"
+                      title="Alinhar: Centro vertical"
+                      aria-label="Alinhar: Centro vertical"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 12h18M7 5v14M17 7v10"></path></svg
+                      ><span>Centro vertical</span></button
+                    ><button
+                      id="align-bottom"
+                      type="button"
+                      title="Alinhar: Base"
+                      aria-label="Alinhar: Base"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 20h18M7 4v12M17 8v8"></path></svg
+                      ><span>Base</span>
+                    </button>
+                  </div>
+                  <div class="distribution-grid">
+                    <button
+                      id="align-distributeX"
+                      type="button"
+                      title="Distribuir horizontalmente"
+                      aria-label="Distribuir horizontalmente"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M3 5v14M21 5v14M9 8h6v8H9z"></path></svg
+                      ><span>Distribuir horizontalmente</span></button
+                    ><button
+                      id="align-distributeY"
+                      type="button"
+                      title="Distribuir verticalmente"
+                      aria-label="Distribuir verticalmente"
+                      disabled
+                    >
+                      <svg viewbox="0 0 24 24" aria-hidden="true">
+                        <path d="M5 3h14M5 21h14M8 9h8v6H8z"></path></svg
+                      ><span>Distribuir verticalmente</span>
+                    </button>
+                  </div>
+                  <details class="tool-menu alignment-options">
+                    <summary>Opções</summary>
+                    <div class="menu-surface">
+                      <label class="field"
+                        >Referência<select id="alignReference">
+                          <option value="canvas">Peça inteira</option>
+                          <option value="selection">Área da seleção</option>
+                        </select></label
+                      ><label class="check-field"
+                        ><input id="alignMargin" type="checkbox" /> Respeitar margem de 5%</label
+                      >
+                      <p id="alignmentHint" class="hint">
+                        Selecione uma camada para alinhar. Grupos mantêm sua composição interna.
+                      </p>
+                    </div>
+                  </details>
+                </div>
+              </div>
               <div class="editor-actions">
                 <button
                   id="undo"
@@ -409,137 +544,6 @@
                       Usar como formato-base</button
                     ><button id="previewAdaptation">Adaptar formatos</button
                     ><button id="rearrange" title="Recalcular a composição deste formato">Reorganizar</button>
-                  </div>
-                </details>
-                <button id="downloadOne" title="Baixar formato">Baixar PNG</button>
-              </div>
-            </div>
-            <div class="canvas-toolbars">
-              <div class="zoom-toolbar" aria-label="Navegação da peça">
-                <button id="zoomOut" title="Diminuir zoom" aria-label="Diminuir zoom">−</button
-                ><label
-                  >Zoom<select id="zoomLevel" aria-label="Escala de visualização">
-                    <option value="fit">Ajustar à tela</option>
-                    <option id="zoomCurrent" hidden></option>
-                    <option value="0.1">10%</option>
-                    <option value="0.25">25%</option>
-                    <option value="0.5">50%</option>
-                    <option value="0.75">75%</option>
-                    <option value="1">100%</option>
-                    <option value="1.5">150%</option>
-                    <option value="2">200%</option>
-                    <option value="3">300%</option>
-                    <option value="4">400%</option>
-                    <option value="6">600%</option>
-                    <option value="8">800%</option>
-                    <option value="12">1200%</option>
-                    <option value="16">1600%</option>
-                  </select></label
-                ><button id="zoomIn" title="Aumentar zoom" aria-label="Aumentar zoom">+</button
-                ><button id="zoomFit" hidden>Ajustar</button
-                ><button id="zoomActual" title="Um pixel da peça por pixel de tela" hidden>100%</button>
-              </div>
-              <div
-                id="alignmentControls"
-                class="alignment-controls alignment-toolbar"
-                role="group"
-                aria-label="Alinhamento da seleção"
-              >
-                <div class="section-line"><h3>Alinhar</h3></div>
-                <div class="alignment-grid">
-                  <button
-                    id="align-left"
-                    type="button"
-                    title="Alinhar: Esquerda"
-                    aria-label="Alinhar: Esquerda"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M4 3v18M8 7h12M8 17h8"></path></svg
-                    ><span>Esquerda</span></button
-                  ><button
-                    id="align-centerX"
-                    type="button"
-                    title="Alinhar: Centro horizontal"
-                    aria-label="Alinhar: Centro horizontal"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 7h14M7 17h10"></path></svg
-                    ><span>Centro horizontal</span></button
-                  ><button
-                    id="align-right"
-                    type="button"
-                    title="Alinhar: Direita"
-                    aria-label="Alinhar: Direita"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M20 3v18M4 7h12M8 17h8"></path></svg
-                    ><span>Direita</span></button
-                  ><button
-                    id="align-top"
-                    type="button"
-                    title="Alinhar: Topo"
-                    aria-label="Alinhar: Topo"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M3 4h18M7 8v12M17 8v8"></path></svg
-                    ><span>Topo</span></button
-                  ><button
-                    id="align-centerY"
-                    type="button"
-                    title="Alinhar: Centro vertical"
-                    aria-label="Alinhar: Centro vertical"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M3 12h18M7 5v14M17 7v10"></path></svg
-                    ><span>Centro vertical</span></button
-                  ><button
-                    id="align-bottom"
-                    type="button"
-                    title="Alinhar: Base"
-                    aria-label="Alinhar: Base"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M7 4v12M17 8v8"></path></svg
-                    ><span>Base</span>
-                  </button>
-                </div>
-                <div class="distribution-grid">
-                  <button
-                    id="align-distributeX"
-                    type="button"
-                    title="Distribuir horizontalmente"
-                    aria-label="Distribuir horizontalmente"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true">
-                      <path d="M3 5v14M21 5v14M9 8h6v8H9z"></path></svg
-                    ><span>Distribuir horizontalmente</span></button
-                  ><button
-                    id="align-distributeY"
-                    type="button"
-                    title="Distribuir verticalmente"
-                    aria-label="Distribuir verticalmente"
-                    disabled
-                  >
-                    <svg viewbox="0 0 24 24" aria-hidden="true">
-                      <path d="M5 3h14M5 21h14M8 9h8v6H8z"></path></svg
-                    ><span>Distribuir verticalmente</span>
-                  </button>
-                </div>
-                <details class="tool-menu alignment-options">
-                  <summary>Opções</summary>
-                  <div class="menu-surface">
-                    <label class="field"
-                      >Referência<select id="alignReference">
-                        <option value="canvas">Peça inteira</option>
-                        <option value="selection">Área da seleção</option>
-                      </select></label
-                    ><label class="check-field"
-                      ><input id="alignMargin" type="checkbox" /> Respeitar margem de 5%</label
-                    >
-                    <p id="alignmentHint" class="hint">
-                      Selecione uma camada para alinhar. Grupos mantêm sua composição interna.
-                    </p>
                   </div>
                 </details>
               </div>

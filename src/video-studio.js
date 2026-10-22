@@ -4,21 +4,21 @@ globalThis.SplitVideoStudio = (() => {
   dialog.id = 'videoStudio';
   dialog.setAttribute('aria-labelledby', 'videoTitle');
   dialog.innerHTML = `<header class="video-header"><div><h2 id="videoTitle">Vídeos</h2><p>Os mesmos assets. Uma nova forma de contar sua campanha.</p></div><button id="closeVideoStudio" type="button" aria-label="Fechar vídeos" title="Fechar">×</button></header>
-  <div class="video-body"><aside class="video-settings"><label class="video-render-all"><input id="videoRenderAll" type="checkbox"> Renderizar todos os formatos</label><p id="videoRenderAllHint" class="video-note">Gera um MP4 por composição e reúne todos em um ZIP.</p><h3>Configure seu vídeo</h3>
+  <div class="video-body"><aside class="video-settings"><h3>Configure seu vídeo</h3>
   <label class="field">Composição de origem<select id="videoFormat"></select></label>
   <label class="field">Duração<select id="videoDuration"><option value="6">6 segundos</option><option value="10" selected>10 segundos</option><option value="15">15 segundos</option><option value="20">20 segundos</option></select></label>
   <label class="field">Estilo para todas as camadas<select id="videoMotion"><option value="slide">Deslizar</option><option value="zoom">Zoom suave</option><option value="fade">Aparecer suavemente</option></select></label>
   <p class="video-note">Selecione uma camada na linha do tempo para personalizar sua animação.</p>
   <label class="field">Intervalo entre entradas (s)<input id="videoStagger" type="number" value="0.3" min="0" max="2" step="0.1"></label>
   <div class="video-actions video-icon-actions" role="group" aria-label="Organizar animações"><button id="videoSequence" type="button" disabled>Em sequência</button><button id="videoTogether" type="button" disabled>Juntas</button><button id="refreshVideo" type="button">Atualizar da composição</button></div>
-  <hr><h3>Seu vídeo pronto</h3><button id="renderVideo" type="button" class="primary" disabled>Gerar MP4</button>
+  <div class="video-export"><h3>Seu vídeo pronto</h3><label class="video-render-all"><input id="videoRenderAll" type="checkbox"> Renderizar todos os formatos</label><p id="videoRenderAllHint" class="video-note">Gera um MP4 por composição e reúne todos em um ZIP.</p><button id="renderVideo" type="button" class="primary" disabled>Gerar MP4</button>
   <progress id="videoRenderProgress" max="100" value="0" hidden aria-label="Progresso da renderização"></progress>
   <button id="cancelVideoRender" type="button" hidden>Cancelar renderização</button>
   <p id="videoRenderStatus" class="video-note" role="status" aria-live="polite">Conectando ao serviço de vídeo…</p>
   <a id="downloadRenderedVideo" class="video-download" hidden download>Baixar MP4</a>
   <details><summary class="video-note">Exportar projeto editável</summary><p class="video-note">Leve as camadas e a animação para continuar no Hyperframes. Vídeo sem áudio.</p>
   <button id="exportVideoProject" type="button" disabled>Baixar projeto · ZIP</button></details>
-  <p id="videoStatus" class="video-note" role="status" aria-live="polite"></p></aside>
+  <p id="videoStatus" class="video-note" role="status" aria-live="polite"></p></div></aside>
   <section class="video-preview" aria-label="Prévia do vídeo"><div id="videoScreen" class="video-screen"><div id="videoEmpty" class="video-empty"><h3>Transforme uma peça em vídeo</h3><p>Gere suas composições no Split para começar, ou abra o exemplo da plataforma.</p><button id="videoExample" type="button">Usar exemplo</button></div><iframe id="videoFrame" title="Prévia animada da campanha" hidden></iframe><div id="videoSelectionOverlay" class="video-selection-overlay" hidden tabindex="0" role="group" aria-label="Selecionar uma camada no canvas. Use o mouse ou as setas do teclado."><svg id="videoSelectionSvg" aria-hidden="true"><polygon id="videoSelectionOutline" fill="none" vector-effect="non-scaling-stroke"/></svg><span id="videoSelectionLabel" class="video-selection-label" hidden></span></div></div>
   <div class="video-transport"><button id="videoPlay" type="button" disabled>▶ Reproduzir</button><input id="videoSeek" type="range" min="0" max="300" value="0" step="1" disabled aria-label="Quadro do vídeo"><output id="videoTime">0:00 / 0:10</output><label class="video-loop"><input id="videoLoop" type="checkbox" checked> Repetir</label></div>
   <div class="video-timeline-heading"><h3>Linha do tempo</h3><span>Selecione no canvas ou nas faixas · clique na régua para avançar</span></div>
@@ -26,24 +26,45 @@ globalThis.SplitVideoStudio = (() => {
   <aside class="video-inspector"><div class="video-inspector-heading"><span class="video-eyebrow">ANIMAÇÃO POR CAMADA</span><h3 id="videoLayerName">Selecione uma camada</h3></div>
   <fieldset id="videoLayerControls" disabled>
     <div class="video-field-pair"><label class="field">Início (s)<input id="videoLayerStart" type="number" min="0" step="0.1"></label><label class="field">Fim (s)<input id="videoLayerEnd" type="number" min="0.1" step="0.1"></label></div>
-    <h4>Entrada</h4><label class="field">Efeito<select id="videoLayerEnter"><option value="slide">Deslizar</option><option value="fade">Aparecer</option><option value="zoom">Zoom</option><option value="pop">Pop</option><option value="rotate">Girar + zoom</option><option value="none">Sem animação</option></select></label>
+    <div class="video-tabs" role="tablist" aria-label="Animação da camada"><button type="button" role="tab" id="videoTab-enter" data-video-tab="enter" aria-selected="true" aria-controls="videoPanel-enter">Entrada</button><button type="button" role="tab" id="videoTab-exit" data-video-tab="exit" aria-selected="false" aria-controls="videoPanel-exit" tabindex="-1">Saída</button><button type="button" role="tab" id="videoTab-motion" data-video-tab="motion" aria-selected="false" aria-controls="videoPanel-motion" tabindex="-1">Movimento</button></div>
+    <div id="videoPanel-enter" class="video-tab-panel" role="tabpanel" data-video-panel="enter" aria-labelledby="videoTab-enter"><label class="field">Efeito de entrada<select id="videoLayerEnter"><option value="slide">Deslizar</option><option value="fade">Aparecer</option><option value="zoom">Zoom</option><option value="pop">Pop</option><option value="rotate">Girar + zoom</option><option value="none">Sem animação</option></select></label>
     <label class="field">Duração da entrada (s)<input id="videoLayerEntryDuration" type="number" min="0.05" step="0.05"></label>
     <label class="field">Suavização<select id="videoLayerEase"><option value="power3.out">Suave · desacelera</option><option value="power1.out">Leve</option><option value="none">Linear</option><option value="back.out(1.7)">Elástica</option><option value="bounce.out">Quicar</option></select></label>
-    <h4>Saída</h4><label class="field">Efeito<select id="videoLayerExit"><option value="none">Sem animação</option><option value="fade">Desaparecer</option><option value="slide">Deslizar</option><option value="zoom">Zoom</option></select></label>
-    <label class="field">Duração da saída (s)<input id="videoLayerExitDuration" type="number" min="0.05" step="0.05"></label>
-    <h4>Movimento e aparência</h4>
-    <label class="field">Direção do movimento<select id="videoLayerDirection"><option value="up">↑ Para cima</option><option value="down">↓ Para baixo</option><option value="left">← Para a esquerda</option><option value="right">→ Para a direita</option></select></label>
-    <label class="field">Deslocamento · % da peça<input id="videoLayerDistance" type="number" min="0" max="100" step="1"></label>
     <label class="field">Escala na entrada (%)<input id="videoLayerScale" type="number" min="10" max="200" step="5"></label>
-    <label class="field">Escala na saída (%)<input id="videoLayerExitScale" type="number" min="10" max="200" step="5"></label>
     <label class="field">Rotação na entrada (°)<input id="videoLayerRotation" type="number" min="-180" max="180" step="5"></label>
-    <p id="videoTransformHint" class="video-note">Durante a entrada, a camada chega a 100% e 0°. Os ajustes aparecem no trecho animado.</p>
-    <label class="field">Opacidade (%)<input id="videoLayerOpacity" type="number" min="10" max="100" step="5"></label>
+    <p id="videoTransformHint" class="video-note">Durante a entrada, a camada chega a 100% e 0°. Os ajustes aparecem no trecho animado.</p></div>
+    <div id="videoPanel-exit" class="video-tab-panel" role="tabpanel" data-video-panel="exit" aria-labelledby="videoTab-exit" hidden><label class="field">Efeito de saída<select id="videoLayerExit"><option value="none">Sem animação</option><option value="fade">Desaparecer</option><option value="slide">Deslizar</option><option value="zoom">Zoom</option></select></label>
+    <label class="field">Duração da saída (s)<input id="videoLayerExitDuration" type="number" min="0.05" step="0.05"></label>
+    <label class="field">Escala na saída (%)<input id="videoLayerExitScale" type="number" min="10" max="200" step="5"></label></div>
+    <div id="videoPanel-motion" class="video-tab-panel" role="tabpanel" data-video-panel="motion" aria-labelledby="videoTab-motion" hidden><label class="field">Direção do movimento<select id="videoLayerDirection"><option value="up">↑ Para cima</option><option value="down">↓ Para baixo</option><option value="left">← Para a esquerda</option><option value="right">→ Para a direita</option></select></label>
+    <label class="field">Deslocamento · % da peça<input id="videoLayerDistance" type="number" min="0" max="100" step="1"></label>
+    <label class="field">Opacidade (%)<input id="videoLayerOpacity" type="number" min="10" max="100" step="5"></label></div>
     <button id="videoPreviewLayer" type="button">▶ Testar esta camada</button>
     <button id="videoApplyAll" type="button">Aplicar estilo a todas</button>
     <p class="video-note">Aplica efeitos e intensidade; mantém os horários de cada camada.</p>
   </fieldset><p class="video-note">Seus ajustes ficam nesta sessão ao fechar a janela ou trocar de formato. Use o ZIP para guardar a animação.</p></aside></div>`;
   document.body.append(dialog);
+  // The layer inspector shows one part of the animation at a time; start and end stay above the tabs.
+  const videoTabs = [...dialog.querySelectorAll('[data-video-tab]')];
+  function showVideoTab(name, focus = false) {
+    for (const tab of videoTabs) {
+      const active = tab.dataset.videoTab === name;
+      tab.setAttribute('aria-selected', String(active));
+      tab.tabIndex = active ? 0 : -1;
+      dialog.querySelector(`[data-video-panel="${tab.dataset.videoTab}"]`).hidden = !active;
+      if (active && focus) tab.focus();
+    }
+  }
+  for (const tab of videoTabs) {
+    tab.onclick = () => showVideoTab(tab.dataset.videoTab);
+    tab.onkeydown = event => {
+      const step = { ArrowLeft: -1, ArrowRight: 1 }[event.key];
+      if (!step) return;
+      event.preventDefault();
+      const next = videoTabs[(videoTabs.indexOf(tab) + step + videoTabs.length) % videoTabs.length];
+      showVideoTab(next.dataset.videoTab, true);
+    };
+  }
   const el = id => document.getElementById(id);
   let snapshot = null,
     playing = false,

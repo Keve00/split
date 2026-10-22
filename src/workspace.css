@@ -1033,9 +1033,6 @@ summary:focus-visible {
     width: 100%;
     justify-content: flex-start;
   }
-  .editor-actions #downloadOne {
-    margin-left: auto;
-  }
   .canvas-toolbars {
     gap: 8px;
     align-items: flex-start;
@@ -2305,4 +2302,77 @@ button.demo-button {
 }
 [data-theme='dark'] .layer-toggle:hover {
   background: var(--paper);
+}
+
+/* Editor: one toolbar holds the piece, zoom, alignment and actions; the steps return in the overview. */
+body[data-view='edit'] #flowSteps {
+  display: none;
+}
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  padding-bottom: 8px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.editor-toolbar {
+  justify-content: flex-start;
+}
+.editor-toolbar #activeFormat {
+  flex: 0 1 150px;
+}
+.editor-toolbar > .canvas-toolbars {
+  flex: 0 1 auto;
+  gap: 6px 8px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+.editor-toolbar > .editor-actions {
+  margin-left: auto;
+}
+.zoom-toolbar label {
+  font-size: 0;
+}
+.zoom-toolbar select {
+  width: 112px;
+}
+.editor-toolbar .alignment-toolbar .section-line {
+  display: none;
+}
+.editor-toolbar .alignment-toolbar {
+  padding-left: 8px;
+  border-left: 1px solid var(--line);
+}
+body:not([data-view='edit']) #downloadOne {
+  display: none;
+}
+.workspace-toolbar #downloadOne {
+  font-size: 12px;
+  padding: 7px 10px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--ink);
+}
+
+/* Layer actions fit one row of icons; the name stays in the tooltip and for screen readers. */
+.panel-body .selection-actions {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 2px;
+}
+.selection-actions button {
+  min-height: 32px;
+  padding: 6px 0;
+  border-color: transparent;
+}
+.selection-actions button:hover:enabled {
+  background: var(--paper);
+}
+.selection-actions button span {
+  display: none;
+}
+.selection-actions #removeLayers {
+  border-left: 1px solid var(--line);
+  border-radius: 0 6px 6px 0;
 }

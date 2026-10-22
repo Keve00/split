@@ -67,7 +67,9 @@ const server = http.createServer((req,res) => {
     await page.waitForFunction(()=>!document.getElementById('videoPlay').disabled);
     assert.equal(await page.locator('#videoSeek').getAttribute('max'),'180');
     const readyPreview=()=>page.waitForFunction(()=>!document.getElementById('videoPlay').disabled);
-    const edit=async(id,value)=>{const input=page.locator('#'+id);if(await input.evaluate(el=>el.tagName==='SELECT'))await page.locator(`#${id}-choices`).locator(`[data-value="${value}"]`).click();else{await input.fill(value);await input.dispatchEvent('change');}await readyPreview();};
+    // Inspector fields live in tabs; open the one that holds a field before editing it.
+    const showTab=id=>page.evaluate(id=>{const panel=document.getElementById(id).closest('[data-video-panel]');if(panel?.hidden)document.querySelector(`[data-video-tab="${panel.dataset.videoPanel}"]`).click();},id);
+    const edit=async(id,value)=>{await showTab(id);const input=page.locator('#'+id);if(await input.evaluate(el=>el.tagName==='SELECT'))await page.locator(`#${id}-choices`).locator(`[data-value="${value}"]`).click();else{await input.fill(value);await input.dispatchEvent('change');}await readyPreview();};
     await page.locator('.video-track-name').first().click();
     await edit('videoLayerEnter','rotate');await edit('videoLayerExit','slide');await edit('videoLayerDirection','left');
     await edit('videoLayerStart','0.6');await edit('videoLayerEnd','4.5');await edit('videoLayerEntryDuration','0.9');await edit('videoLayerExitDuration','0.4');
