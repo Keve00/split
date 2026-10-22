@@ -2226,10 +2226,6 @@ button.size-chip.is-added {
   font-size: 12px;
   font-weight: 600;
 }
-.field .optional {
-  font-weight: 400;
-  color: var(--muted);
-}
 .format-profiles {
   padding-top: 4px;
   border-top: 1px solid var(--line);
