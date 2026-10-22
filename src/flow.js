@@ -224,6 +224,11 @@ globalThis.SplitFlow = (() => {
       exported = true;
       scheduleSteps();
     });
+  $('cards').addEventListener('click', event => {
+    if (!event.target.closest('.cards-group-zip')) return;
+    exported = true;
+    scheduleSteps();
+  });
   $('editOnPhone').onclick = () => {
     try {
       sessionStorage.setItem(reviewKey, '1');

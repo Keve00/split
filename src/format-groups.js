@@ -1,0 +1,249 @@
+/* Format groups: menus to move, rename or delete, and a catalog of common sizes per channel. */
+'use strict';
+globalThis.SplitFormatGroups = (() => {
+  // Sizes the channels publish in their specs; a size that already exists is selected, never duplicated.
+  const CATALOG = [
+    [
+      'Ads Meta',
+      [
+        ['Feed quadrado', 1080, 1080],
+        ['Feed vertical', 1080, 1350],
+        ['Stories / Reels', 1080, 1920],
+        ['Anúncio horizontal', 1200, 628]
+      ]
+    ],
+    [
+      'Banners para sites',
+      [
+        ['Retângulo médio', 300, 250],
+        ['Banner horizontal', 728, 90],
+        ['Retângulo grande', 336, 280],
+        ['Arranha-céu', 160, 600],
+        ['Meia página', 300, 600],
+        ['Billboard', 970, 250],
+        ['Banner mobile', 320, 50],
+        ['Banner mobile grande', 320, 100]
+      ]
+    ],
+    [
+      'Google Ads',
+      [
+        ['Paisagem', 1200, 628],
+        ['Quadrado', 1200, 1200],
+        ['Retrato', 960, 1200]
+      ]
+    ],
+    [
+      'LinkedIn Ads',
+      [
+        ['Feed horizontal', 1200, 627],
+        ['Feed quadrado', 1200, 1200],
+        ['Feed vertical', 720, 900]
+      ]
+    ]
+  ];
+  const sizeOf = (w, h) => FORMATS.find(f => f.w === w && f.h === h);
+
+  function addSizes(group, sizes) {
+    const selected = chosenFormats(),
+      fresh = sizes.filter(([, w, h]) => !sizeOf(w, h)),
+      pending = sizes.filter(([, w, h]) => !selected.includes(sizeOf(w, h)?.id));
+    if (!fresh.length && !pending.length) {
+      toast(
+        sizes.length === 1 ? 'Este tamanho já está selecionado.' : 'Esses tamanhos já estão selecionados.'
+      );
+      return;
+    }
+    checkpoint();
+    for (const [name, w, h] of fresh)
+      placeInGroup({ id: `custom-${++customSequence}`, name, w, h, group, custom: true });
+    formatOptions([...new Set([...selected, ...sizes.map(([, w, h]) => sizeOf(w, h).id)])]);
+    toast(
+      fresh.length
+        ? `${fresh.length} ${fresh.length === 1 ? 'tamanho adicionado' : 'tamanhos adicionados'} em ${group}. Clique em Gerar composições.`
+        : 'Tamanhos selecionados. Clique em Gerar composições.'
+    );
+  }
+
+  function renderCatalog() {
+    const holder = $('sizeCatalog');
+    holder.replaceChildren();
+    for (const [group, sizes] of CATALOG) {
+      const section = document.createElement('div'),
+        head = document.createElement('div'),
+        title = document.createElement('strong'),
+        all = document.createElement('button'),
+        chips = document.createElement('div');
+      section.className = 'size-catalog-group';
+      head.className = 'size-catalog-head';
+      title.textContent = group;
+      all.type = 'button';
+      all.className = 'text-button';
+      all.textContent = 'Adicionar todos';
+      all.setAttribute('aria-label', `Adicionar todos os tamanhos de ${group}`);
+      all.onclick = () => addSizes(group, sizes);
+      head.append(title, all);
+      chips.className = 'size-chips';
+      for (const size of sizes) {
+        const [name, w, h] = size,
+          existing = sizeOf(w, h),
+          chip = document.createElement('button'),
+          label = document.createElement('small');
+        chip.type = 'button';
+        chip.className = 'size-chip';
+        chip.classList.toggle('is-added', !!existing);
+        chip.textContent = `${existing ? '✓ ' : ''}${w} × ${h}`;
+        label.textContent = name;
+        chip.append(label);
+        chip.title = existing ? `${name} · já está em ${existing.group}` : `Adicionar ${name} em ${group}`;
+        chip.onclick = () => addSizes(group, [size]);
+        chips.append(chip);
+      }
+      section.append(head, chips);
+      holder.append(section);
+    }
+  }
+
+  let menu = null,
+    anchor = null;
+  function closeMenu(restoreFocus = false) {
+    if (!menu) return;
+    menu.remove();
+    anchor?.setAttribute('aria-expanded', 'false');
+    if (restoreFocus && anchor?.isConnected) anchor.focus();
+    menu = anchor = null;
+  }
+  function item(label, action, className = '') {
+    const button = document.createElement('button');
+    button.type = 'button';
+    button.setAttribute('role', 'menuitem');
+    button.textContent = label;
+    if (className) button.className = className;
+    button.onclick = () => {
+      closeMenu();
+      action();
+    };
+    return button;
+  }
+  // Replaces a menu entry with a one-field form, used for new and renamed groups.
+  function nameForm(label, value, submit) {
+    const form = document.createElement('form'),
+      input = document.createElement('input'),
+      ok = document.createElement('button');
+    form.className = 'menu-form';
+    input.type = 'text';
+    input.maxLength = 30;
+    input.required = true;
+    input.value = value;
+    input.setAttribute('aria-label', label);
+    input.placeholder = label;
+    ok.type = 'submit';
+    ok.textContent = 'OK';
+    form.append(input, ok);
+    form.onsubmit = event => {
+      event.preventDefault();
+      const name = input.value.trim();
+      if (!name) return;
+      closeMenu();
+      submit(name);
+    };
+    return form;
+  }
+  function openMenu(button, build) {
+    const reopen = menu && anchor === button;
+    closeMenu();
+    if (reopen) return;
+    menu = document.createElement('div');
+    menu.className = 'menu-surface format-menu';
+    menu.setAttribute('role', 'menu');
+    anchor = button;
+    build(menu);
+    document.body.append(menu);
+    const rect = button.getBoundingClientRect(),
+      width = menu.offsetWidth,
+      height = menu.offsetHeight;
+    menu.style.left = `${clamp(rect.right - width, 8, window.innerWidth - width - 8)}px`;
+    menu.style.top = `${rect.bottom + 4 + height > window.innerHeight ? Math.max(8, rect.top - height - 4) : rect.bottom + 4}px`;
+    button.setAttribute('aria-expanded', 'true');
+    menu.querySelector('button')?.focus();
+  }
+  function label(text) {
+    const node = document.createElement('p');
+    node.className = 'menu-label';
+    node.textContent = text;
+    return node;
+  }
+
+  function formatMenu(button) {
+    const f = FORMATS.find(x => x.id === button.dataset.formatMenu);
+    if (!f) return;
+    openMenu(button, surface => {
+      surface.append(label('Mover para'));
+      for (const [group] of formatGroups())
+        if (group !== f.group) surface.append(item(group, () => moveFormat(f.id, group)));
+      const create = document.createElement('button');
+      create.type = 'button';
+      create.setAttribute('role', 'menuitem');
+      create.textContent = 'Novo grupo…';
+      create.onclick = () => {
+        const form = nameForm('Nome do grupo', '', name => moveFormat(f.id, name));
+        create.replaceWith(form);
+        form.querySelector('input').focus();
+      };
+      surface.append(create, document.createElement('hr'));
+      surface.append(item('Excluir formato', () => removeFormat(f.id), 'danger-item'));
+    });
+  }
+  function groupMenu(button) {
+    const group = groupOf(button.closest('.format-group').querySelector('.format-option input').value),
+      count = FORMATS.filter(f => f.group === group).length;
+    openMenu(button, surface => {
+      const rename = document.createElement('button');
+      rename.type = 'button';
+      rename.setAttribute('role', 'menuitem');
+      rename.textContent = 'Renomear grupo…';
+      rename.onclick = () => {
+        const form = nameForm('Nome do grupo', group, name => renameGroup(group, name));
+        rename.replaceWith(form);
+        form.querySelector('input').select();
+      };
+      surface.append(rename, document.createElement('hr'));
+      surface.append(
+        item(
+          `Excluir grupo e ${count === 1 ? 'o tamanho' : `os ${count} tamanhos`}`,
+          () => removeGroup(group),
+          'danger-item'
+        )
+      );
+    });
+  }
+
+  function render() {
+    const names = formatGroups().map(([group]) => group);
+    for (const [group] of CATALOG) if (!names.includes(group)) names.push(group);
+    $('formatGroupNames').replaceChildren(
+      ...names.map(name => Object.assign(document.createElement('option'), { value: name }))
+    );
+    renderCatalog();
+  }
+
+  $('formats').addEventListener('click', event => {
+    const format = event.target.closest('[data-format-menu]'),
+      group = event.target.closest('[data-group-menu]');
+    if (format) formatMenu(format);
+    else if (group) groupMenu(group);
+  });
+  document.addEventListener('pointerdown', event => {
+    if (menu && !menu.contains(event.target) && !anchor?.contains(event.target)) closeMenu();
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key === 'Escape' && menu) {
+      event.stopPropagation();
+      closeMenu(true);
+    }
+  });
+  window.addEventListener('resize', () => closeMenu());
+  $('leftDock').addEventListener('scroll', () => closeMenu(), true);
+  render();
+  return { render, addSizes, catalog: () => clone(CATALOG) };
+})();

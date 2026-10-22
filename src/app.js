@@ -1,13 +1,51 @@
 'use strict';
 const $ = id => document.getElementById(id);
 const FORMATS = [
-  { id: 'square', name: 'Feed quadrado', w: 1080, h: 1080, group: 'SOCIAL' },
-  { id: 'portrait', name: 'Feed vertical', w: 1080, h: 1350, group: 'SOCIAL' },
-  { id: 'story', name: 'Stories / Reels', w: 1080, h: 1920, group: 'SOCIAL' },
-  { id: 'landscape', name: 'Anúncio horizontal', w: 1200, h: 628, group: 'SOCIAL' },
-  { id: 'rectangle', name: 'Retângulo médio', w: 300, h: 250, group: 'BANNER' },
-  { id: 'leaderboard', name: 'Banner horizontal', w: 728, h: 90, group: 'BANNER' }
+  { id: 'square', name: 'Feed quadrado', w: 1080, h: 1080, group: 'Ads Meta' },
+  { id: 'portrait', name: 'Feed vertical', w: 1080, h: 1350, group: 'Ads Meta' },
+  { id: 'story', name: 'Stories / Reels', w: 1080, h: 1920, group: 'Ads Meta' },
+  { id: 'landscape', name: 'Anúncio horizontal', w: 1200, h: 628, group: 'Ads Meta' },
+  { id: 'rectangle', name: 'Retângulo médio', w: 300, h: 250, group: 'Banners para sites' },
+  { id: 'leaderboard', name: 'Banner horizontal', w: 728, h: 90, group: 'Banners para sites' }
 ];
+// Projects saved before groups had names use these codes.
+const LEGACY_GROUPS = { SOCIAL: 'Ads Meta', BANNER: 'Banners para sites', CUSTOM: 'Personalizados' };
+const CUSTOM_GROUP = 'Personalizados';
+const groupName = group =>
+  LEGACY_GROUPS[group] ||
+  String(group || '')
+    .trim()
+    .slice(0, 30) ||
+  CUSTOM_GROUP;
+const groupOf = id => groupName(FORMATS.find(f => f.id === id)?.group);
+// Groups in the order their first format appears.
+function formatGroups(list = FORMATS, key = f => f.group) {
+  const groups = new Map();
+  for (const item of list) {
+    const name = groupName(key(item));
+    if (!groups.has(name)) groups.set(name, []);
+    groups.get(name).push(item);
+  }
+  return [...groups];
+}
+// Keeps each group contiguous, so a format added or moved to a group lands at its end.
+function placeInGroup(format) {
+  const index = FORMATS.indexOf(format);
+  if (index >= 0) FORMATS.splice(index, 1);
+  const last = FORMATS.findLastIndex(f => f.group === format.group);
+  FORMATS.splice(last < 0 ? FORMATS.length : last + 1, 0, format);
+}
+const collapsedKey = 'split.format-groups.collapsed';
+let collapsedGroups = new Set();
+try {
+  collapsedGroups = new Set(JSON.parse(localStorage.getItem(collapsedKey) || '[]'));
+} catch {}
+function toggleGroup(name, open) {
+  open ? collapsedGroups.delete(name) : collapsedGroups.add(name);
+  try {
+    localStorage.setItem(collapsedKey, JSON.stringify([...collapsedGroups]));
+  } catch {}
+}
 const DEFAULT_FORMATS = FORMATS.map(f => ({ ...f }));
 let baseComposition = null;
 let sources = [],
@@ -100,21 +138,56 @@ function escapeText(text) {
     ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[ch]
   );
 }
+function formatEntry(f, checked) {
+  const name = escapeText(f.name);
+  return `<div class="format-entry"><label class="format-option"><input type="checkbox" value="${f.id}" ${checked.includes(f.id) ? 'checked' : ''}><span class="format-icon" style="width:${f.w > f.h ? 20 : 13}px;height:${f.w > f.h ? 12 : 18}px"></span><span class="format-label">${name}<small>${f.w} × ${f.h} px</small></span></label><button class="format-more" type="button" data-format-menu="${f.id}" aria-label="Opções do formato ${name}" title="Mover para outro grupo ou excluir">⋯</button></div>`;
+}
+function syncFormatGroups() {
+  for (const section of $('formats').querySelectorAll('.format-group')) {
+    const inputs = [...section.querySelectorAll('.format-option input')],
+      on = inputs.filter(input => input.checked).length,
+      toggle = section.querySelector('[data-group-toggle]');
+    toggle.checked = on === inputs.length;
+    toggle.indeterminate = on > 0 && on < inputs.length;
+    section.querySelector('.format-group-count').textContent = `${on}/${inputs.length}`;
+  }
+}
 function formatOptions(checked = FORMATS.map(f => f.id)) {
-  $('formats').innerHTML = FORMATS.map(
-    f =>
-      `<div class="format-entry"><label class="format-option"><input type="checkbox" value="${f.id}" ${checked.includes(f.id) ? 'checked' : ''}><span class="format-icon" style="width:${f.w > f.h ? 20 : 13}px;height:${f.w > f.h ? 12 : 18}px"></span><span class="format-label">${escapeText(f.name)}<small>${f.w} × ${f.h} px</small></span><span class="format-badge">${f.group}</span></label><button class="format-remove" type="button" data-remove-format="${f.id}" aria-label="Excluir formato ${escapeText(f.name)}" title="Excluir formato">×</button></div>`
-  ).join('');
+  for (const f of FORMATS) f.group = groupName(f.group);
+  $('formats').innerHTML = formatGroups()
+    .map(([group, list]) => {
+      const name = escapeText(group),
+        open = !collapsedGroups.has(group);
+      return `<div class="format-group" role="group" aria-label="${name}"><div class="format-group-head"><input type="checkbox" data-group-toggle aria-label="Selecionar todos os tamanhos de ${name}"><button type="button" class="format-group-name" aria-expanded="${open}"><span>${name}</span><small class="format-group-count"></small></button><button class="format-more" type="button" data-group-menu aria-label="Opções do grupo ${name}" title="Renomear ou excluir o grupo">⋯</button></div><div class="format-group-items"${open ? '' : ' hidden'}>${list.map(f => formatEntry(f, checked)).join('')}</div></div>`;
+    })
+    .join('');
   $('formats').onchange = () => {
     $('formatCount').textContent = chosenFormats().length;
     globalThis.SplitFormatProfiles?.render();
     globalThis.SplitProjects?.changed();
   };
-  $('formatCount').textContent = checked.length;
+  // These run on the target, before the panel-wide change handler records the new selection.
+  for (const section of $('formats').querySelectorAll('.format-group')) {
+    const group = groupOf(section.querySelector('.format-option input').value);
+    section.querySelector('[data-group-toggle]').onchange = event => {
+      for (const input of section.querySelectorAll('.format-option input'))
+        input.checked = event.target.checked;
+      syncFormatGroups();
+    };
+    for (const input of section.querySelectorAll('.format-option input')) input.onchange = syncFormatGroups;
+    const head = section.querySelector('.format-group-name'),
+      items = section.querySelector('.format-group-items');
+    head.onclick = () => {
+      items.hidden = !items.hidden;
+      head.setAttribute('aria-expanded', String(!items.hidden));
+      toggleGroup(group, !items.hidden);
+    };
+  }
+  syncFormatGroups();
+  $('formatCount').textContent = checked.filter(id => FORMATS.some(f => f.id === id)).length;
   globalThis.SplitProjects?.changed();
-  for (const button of $('formats').querySelectorAll('button[data-remove-format]'))
-    button.onclick = () => removeFormat(button.dataset.removeFormat);
   globalThis.SplitFormatProfiles?.render();
+  globalThis.SplitFormatGroups?.render();
 }
 function validateDimensions(w, h) {
   if (
@@ -128,7 +201,7 @@ function validateDimensions(w, h) {
   )
     throw Error('Use dimensões inteiras de 32 a 4096 px, com até 16 megapixels.');
 }
-function addCustomFormat(w, h) {
+function addCustomFormat(w, h, { name = '', group = CUSTOM_GROUP } = {}) {
   validateDimensions(w, h);
   const duplicate = FORMATS.find(f => f.w === w && f.h === h);
   if (duplicate) {
@@ -141,15 +214,15 @@ function addCustomFormat(w, h) {
   const checked = chosenFormats(),
     f = {
       id: `custom-${++customSequence}`,
-      name: `Personalizado ${w} × ${h}`,
+      name: String(name).trim().slice(0, 60) || `Personalizado ${w} × ${h}`,
       w,
       h,
-      group: 'CUSTOM',
+      group: groupName(group),
       custom: true
     };
-  FORMATS.push(f);
+  placeInGroup(f);
   formatOptions([...checked, f.id]);
-  toast('Tamanho adicionado. Clique em Gerar composições.');
+  toast(`Tamanho adicionado em ${f.group}. Clique em Gerar composições.`);
   return f.id;
 }
 function removeFormat(id) {
@@ -165,7 +238,47 @@ function removeFormat(id) {
   }
   formatOptions(checked);
   refresh();
-  toast('Formato excluído. As demais composições foram preservadas.');
+  toast('Formato excluído. As demais composições foram preservadas.', true);
+}
+function moveFormat(id, group) {
+  const f = FORMATS.find(x => x.id === id);
+  group = groupName(group);
+  if (!f || f.group === group) return;
+  checkpoint();
+  f.group = group;
+  placeInGroup(f);
+  formatOptions(chosenFormats());
+  refresh();
+  toast(`${f.name} movido para ${group}.`, true);
+}
+function renameGroup(from, to) {
+  to = groupName(to);
+  if (from === to || !FORMATS.some(f => f.group === from)) return;
+  checkpoint();
+  const merged = FORMATS.some(f => f.group === to);
+  for (const f of FORMATS.filter(x => x.group === from)) {
+    f.group = to;
+    if (merged) placeInGroup(f);
+  }
+  if (collapsedGroups.has(from)) toggleGroup(from, true);
+  formatOptions(chosenFormats());
+  refresh();
+  toast(merged ? `Os tamanhos de ${from} foram juntados a ${to}.` : `Grupo renomeado para ${to}.`, true);
+}
+function removeGroup(group) {
+  const ids = FORMATS.filter(f => f.group === group).map(f => f.id);
+  if (!ids.length) return;
+  checkpoint();
+  const checked = chosenFormats().filter(id => !ids.includes(id));
+  FORMATS.splice(0, FORMATS.length, ...FORMATS.filter(f => !ids.includes(f.id)));
+  outputs = outputs.filter(o => !ids.includes(o.id));
+  if (ids.includes(activeId)) {
+    activeId = outputs[0]?.id || null;
+    selectedId = null;
+  }
+  formatOptions(checked);
+  refresh();
+  toast(`Grupo ${group} excluído com ${ids.length} tamanho${ids.length === 1 ? '' : 's'}.`, true);
 }
 function removeCustomFormat(id) {
   if (FORMATS.some(f => f.id === id && f.custom)) removeFormat(id);
@@ -178,11 +291,12 @@ function restoreFormats() {
   }
   checkpoint();
   const checked = chosenFormats();
-  FORMATS.push(...clone(missing));
+  for (const f of clone(missing)) placeInGroup(f);
   formatOptions([...checked, ...missing.map(f => f.id)]);
   toast('Formatos padrão restaurados. Clique em Gerar composições para criar as saídas.');
 }
-const chosenFormats = () => Array.from($('formats').querySelectorAll('input:checked')).map(el => el.value);
+const chosenFormats = () =>
+  Array.from($('formats').querySelectorAll('.format-option input:checked')).map(el => el.value);
 let fontsPromise;
 function ensureFonts() {
   if (!document.fonts) return Promise.resolve();
@@ -816,7 +930,6 @@ function syncBackgroundSwatches() {
 function refresh() {
   updateUploadIndicators();
   $('solidBgField').hidden = !!backgroundSource;
-  $('solidBgHint').hidden = !!backgroundSource;
   $('defaultBgColor').value = baseBackground;
   syncBackgroundSwatches();
   $('backgroundInfo').hidden = !backgroundSource;
@@ -825,37 +938,66 @@ function refresh() {
   $('empty').hidden = !!outputs.length;
   $('exportAll').disabled = !outputs.length;
   $('outputCount').textContent = outputs.length ? `${outputs.length} formatos · PNG` : 'Nenhuma saída gerada';
-  $('activeFormat').innerHTML = outputs.map(o => `<option value="${o.id}">${o.name}</option>`).join('');
+  const options = list => list.map(o => `<option value="${o.id}">${escapeText(o.name)}</option>`).join(''),
+    groups = formatGroups(outputs, o => groupOf(o.id));
+  $('activeFormat').innerHTML =
+    groups.length > 1
+      ? groups
+          .map(([group, list]) => `<optgroup label="${escapeText(group)}">${options(list)}</optgroup>`)
+          .join('')
+      : options(outputs);
   $('activeFormat').value = activeId || '';
   $('undo').disabled = !history.length;
   renderCards();
   renderEditor();
   globalThis.SplitProjects?.changed();
 }
+function outputCard(out) {
+  const card = document.createElement('article');
+  card.className = 'output-card';
+  card.dataset.format = out.id;
+  const preview = document.createElement('button');
+  preview.className = 'preview';
+  preview.setAttribute('aria-label', `Editar ${out.name}`);
+  const canvas = document.createElement('canvas');
+  const status = document.createElement('span');
+  status.className = 'background-state';
+  status.setAttribute('role', 'status');
+  status.setAttribute('aria-live', 'polite');
+  preview.append(canvas, status);
+  render(canvas, out, false, 500);
+  preview.onclick = () => openFormat(out.id);
+  const footer = document.createElement('div');
+  footer.className = 'card-footer';
+  footer.innerHTML = `<div><strong>${escapeText(out.name)}</strong><small>${out.w} × ${out.h} px</small></div><button>Editar</button>`;
+  footer.querySelector('button').onclick = () => openFormat(out.id);
+  card.append(preview, footer);
+  return card;
+}
+// With more than one group, each group gets a heading and its own ZIP download.
 function renderCards() {
-  const cards = $('cards');
+  const cards = $('cards'),
+    groups = formatGroups(outputs, out => groupOf(out.id));
   cards.replaceChildren();
-  for (const out of outputs) {
-    const card = document.createElement('article');
-    card.className = 'output-card';
-    card.dataset.format = out.id;
-    const preview = document.createElement('button');
-    preview.className = 'preview';
-    preview.setAttribute('aria-label', `Editar ${out.name}`);
-    const canvas = document.createElement('canvas');
-    const status = document.createElement('span');
-    status.className = 'background-state';
-    status.setAttribute('role', 'status');
-    status.setAttribute('aria-live', 'polite');
-    preview.append(canvas, status);
-    render(canvas, out, false, 500);
-    preview.onclick = () => openFormat(out.id);
-    const footer = document.createElement('div');
-    footer.className = 'card-footer';
-    footer.innerHTML = `<div><strong>${escapeText(out.name)}</strong><small>${out.w} × ${out.h} px</small></div><button>Editar</button>`;
-    footer.querySelector('button').onclick = () => openFormat(out.id);
-    card.append(preview, footer);
-    cards.append(card);
+  for (const [group, list] of groups) {
+    if (groups.length > 1) {
+      const head = document.createElement('div'),
+        title = document.createElement('h3'),
+        count = document.createElement('small'),
+        zip = document.createElement('button');
+      head.className = 'cards-group';
+      title.textContent = group;
+      count.textContent = `${list.length} ${list.length === 1 ? 'peça' : 'peças'}`;
+      title.append(count);
+      zip.type = 'button';
+      zip.className = 'text-button cards-group-zip';
+      zip.textContent = 'Baixar grupo · ZIP';
+      zip.setAttribute('aria-label', `Baixar as peças de ${group} em ZIP`);
+      zip.onclick = () => exportAll(group);
+      head.append(title, zip);
+      cards.append(head);
+    }
+    for (const out of list) cards.append(outputCard(out));
   }
 }
 function sizeStage() {
@@ -1422,30 +1564,43 @@ function zipFiles(files) {
   return new Blob([...parts, ...central, end], { type: 'application/zip' });
 }
 let exporting = false;
-async function exportAll() {
+const folderName = text =>
+  text
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9_-]+/g, '-')
+    .replace(/^-|-$/g, '')
+    .toLowerCase() || 'grupo';
+// Without a group, the ZIP holds every piece, in one folder per group when there are several.
+async function exportAll(group = null) {
   if (!outputs.length || exporting) return;
   exporting = true;
-  const snapshot = clone(outputs),
+  const snapshot = clone(group ? outputs.filter(out => groupOf(out.id) === group) : outputs),
     memoryId = globalThis.SplitMemory?.identity().projectId,
     name = safeName(),
     planned = !!globalThis.SplitBlueprint?.enabled(),
     prepared = globalThis.SplitMemory?.prepare(snapshot, { images, planned }),
-    dpi = globalThis.SplitDensity?.get() || 96;
+    dpi = globalThis.SplitDensity?.get() || 96,
+    folders = !group && new Set(snapshot.map(out => groupOf(out.id))).size > 1;
   const button = $('exportAll');
   button.disabled = true;
   button.textContent = 'Preparando arquivos…';
   try {
     const files = [];
     for (const out of snapshot) {
-      const blob = await outputBlob(out, dpi);
-      files.push({ name: `${name}-${out.w}x${out.h}.png`, data: new Uint8Array(await blob.arrayBuffer()) });
+      const blob = await outputBlob(out, dpi),
+        folder = folders ? `${folderName(groupOf(out.id))}/` : '';
+      files.push({
+        name: `${folder}${name}-${out.w}x${out.h}.png`,
+        data: new Uint8Array(await blob.arrayBuffer())
+      });
     }
-    download(zipFiles(files), `${name}-formatos.zip`);
+    download(zipFiles(files), `${name}-${group ? folderName(group) : 'formatos'}.zip`);
     if (globalThis.SplitMemory?.identity().projectId === memoryId) {
       SplitMemory.record('export', snapshot, { prepared });
       globalThis.SplitProjects?.changed();
     }
-    toast(`${files.length} imagens exportadas em PNG.`);
+    toast(`${files.length} imagens exportadas em PNG${group ? ` · ${group}` : ''}.`);
   } catch (e) {
     toast(e.message || 'Não foi possível exportar. Tente baixar cada PNG.');
   } finally {
@@ -1491,7 +1646,11 @@ $('rearrange').onclick = async () => {
 $('customFormatForm').onsubmit = ev => {
   ev.preventDefault();
   try {
-    addCustomFormat(Number($('customWidth').value), Number($('customHeight').value));
+    addCustomFormat(Number($('customWidth').value), Number($('customHeight').value), {
+      name: $('customName').value,
+      group: $('customGroup').value
+    });
+    $('customName').value = '';
   } catch (e) {
     toast(e.message);
   }
@@ -1572,7 +1731,7 @@ $('demo').onclick = $('emptyDemo').onclick = demo;
 $('gridView').onclick = () => setView('grid');
 $('editView').onclick = () => setView('edit');
 $('activeFormat').onchange = ev => openFormat(ev.target.value);
-$('exportAll').onclick = exportAll;
+$('exportAll').onclick = () => exportAll();
 $('downloadOne').onclick = exportOne;
 $('undo').onclick = undo;
 $('bgColor').onchange = ev => {

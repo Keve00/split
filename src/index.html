@@ -125,37 +125,38 @@
             </button>
           </header>
           <div class="panel-body">
-            <div class="add-grid">
+            <h3 class="panel-subhead">Imagens <small>PNG transparente preserva o recorte</small></h3>
+            <div class="add-grid image-grid">
               <div class="asset-control">
-                <button id="addBackground" class="asset-button"><span>▧ Fundo</span></button
+                <button id="addBackground" class="asset-button"><span>Fundo</span></button
                 ><button type="button" id="backgroundUploadBadge" class="upload-badge" hidden></button>
               </div>
               <div class="asset-control">
-                <button id="addOffer" class="asset-button">
-                  <span>▧ Oferta<small>(imagem)</small></span></button
-                ><button type="button" id="offerUploadBadge" class="upload-badge" hidden></button>
-              </div>
-              <div class="asset-control">
-                <button id="addImage" class="asset-button"><span>▧ Imagem</span></button
+                <button id="addImage" class="asset-button"><span>Imagem</span></button
                 ><button type="button" id="imageUploadBadge" class="upload-badge" hidden></button>
               </div>
               <div class="asset-control">
-                <button id="addLogo" class="asset-button"><span>▧ Logo</span></button
+                <button id="addLogo" class="asset-button"><span>Logo</span></button
                 ><button type="button" id="logoUploadBadge" class="upload-badge" hidden></button>
               </div>
               <div class="asset-control">
-                <button id="addTextImage" class="asset-button">
-                  <span>▧ Texto<small>(imagem)</small></span></button
+                <button id="addOffer" class="asset-button"><span>Oferta</span></button
+                ><button type="button" id="offerUploadBadge" class="upload-badge" hidden></button>
+              </div>
+              <div class="asset-control">
+                <button id="addTextImage" class="asset-button"><span>Texto</span></button
                 ><button type="button" id="textUploadBadge" class="upload-badge" hidden></button>
               </div>
               <div class="asset-control">
-                <button id="addText" class="asset-button"><span>T Texto</span></button>
-              </div>
-              <div class="asset-control">
-                <button id="addCTA" class="asset-button">
-                  <span>▧ Botão<small>(imagem)</small></span></button
+                <button id="addCTA" class="asset-button"><span>Botão</span></button
                 ><button type="button" id="ctaUploadBadge" class="upload-badge" hidden></button>
               </div>
+            </div>
+            <h3 class="panel-subhead">Textos editáveis</h3>
+            <div class="add-grid text-grid">
+              <button id="addText" type="button">Texto</button
+              ><button id="addOfferText" type="button">Oferta</button
+              ><button id="addCTAText" type="button">Botão</button>
             </div>
             <div id="uploadedImagesPanels" class="asset-panels" hidden>
               <details id="backgroundAccordion" class="asset-accordion" hidden>
@@ -183,14 +184,6 @@
                 <div id="ctaFiles" class="asset-files" hidden></div>
               </details>
             </div>
-            <p class="hint asset-hint">Use PNG transparente para preservar o recorte das imagens.</p>
-            <details class="text-elements">
-              <summary>Oferta e botão em texto</summary>
-              <div class="add-grid">
-                <button id="addOfferText">% Oferta em texto</button
-                ><button id="addCTAText">T Botão em texto</button>
-              </div>
-            </details>
             <input type="file" id="elementFile" accept="image/png,image/jpeg,image/webp" hidden />
             <div id="backgroundInfo" class="background-info" hidden>
               <strong id="backgroundName"></strong
@@ -198,15 +191,14 @@
               <p class="hint">O fundo é adaptado automaticamente, preservando a proporção da imagem.</p>
             </div>
             <input type="file" id="backgroundFile" accept="image/png,image/jpeg,image/webp" hidden />
-            <label id="solidBgField" class="field color-field"
-              >Fundo chapado<span class="background-color-chip" style="background-color: #f4eee8"
+            <label id="solidBgField" class="field color-field" title="Usada quando não há imagem de fundo"
+              >Cor de fundo<span class="background-color-chip" style="background-color: #f4eee8"
                 ><input
                   id="defaultBgColor"
                   type="color"
                   value="#f4eee8"
                   aria-label="Cor de fundo chapado" /></span
             ></label>
-            <p id="solidBgHint" class="hint">Usada quando não há imagem de fundo.</p>
           </div>
           <button
             class="panel-resize"
@@ -229,32 +221,12 @@
             </button>
           </header>
           <div class="panel-body">
-            <div class="format-profiles">
-              <h3>Perfis de formatos</h3>
-              <div id="formatProfiles" class="format-profile-list"></div>
-              <p id="profileEmpty" class="hint">Selecione os tamanhos abaixo e salve um perfil.</p>
-              <details id="saveFormatProfileDetails" class="quiet-disclosure">
-                <summary>Salvar seleção como perfil</summary>
-                <form id="formatProfileForm" class="profile-form">
-                  <label class="field"
-                    >Nome do perfil<input
-                      id="formatProfileName"
-                      type="text"
-                      maxlength="60"
-                      placeholder="Rede Social, Banner app…"
-                      required
-                  /></label>
-                  <p class="hint">
-                    Use o mesmo nome para atualizar um perfil. Perfis ficam salvos neste navegador.
-                  </p>
-                  <button type="submit">Salvar perfil</button>
-                </form>
-              </details>
-            </div>
             <div id="formats" class="formats"></div>
-            <details class="quiet-disclosure">
-              <summary>Tamanho personalizado</summary>
+            <details id="addSizes" class="quiet-disclosure add-sizes">
+              <summary>＋ Adicionar tamanhos</summary>
+              <div id="sizeCatalog" class="size-catalog"></div>
               <form id="customFormatForm" class="custom-format">
+                <h4>Tamanho personalizado</h4>
                 <div class="prop-grid">
                   <label class="field"
                     >Largura (px)<input
@@ -276,17 +248,48 @@
                       required
                   /></label>
                 </div>
-                <button type="submit">＋ Adicionar tamanho</button>
+                <label class="field"
+                  >Nome <span class="optional">opcional</span
+                  ><input id="customName" type="text" maxlength="60" placeholder="Ex.: Capa do e-mail"
+                /></label>
+                <label class="field"
+                  >Grupo<input
+                    id="customGroup"
+                    type="text"
+                    maxlength="30"
+                    list="formatGroupNames"
+                    placeholder="Personalizados"
+                /></label>
+                <datalist id="formatGroupNames"></datalist>
+                <button type="submit">Adicionar tamanho</button>
                 <p class="hint">De 32 a 4096 px por lado · até 16 megapixels.</p>
                 <button id="restoreFormats" type="button" class="text-button">
                   Restaurar formatos padrão
                 </button>
               </form>
             </details>
-            <p class="hint">
-              A composição considera a proporção das imagens, a legibilidade e o espaço disponível.
-            </p>
-            <button id="demo" class="demo-button">Experimentar com um exemplo</button>
+            <div class="format-profiles">
+              <h3 id="profileHeading">Perfis salvos</h3>
+              <div id="formatProfiles" class="format-profile-list"></div>
+              <details id="saveFormatProfileDetails" class="quiet-disclosure">
+                <summary>Salvar seleção como perfil</summary>
+                <form id="formatProfileForm" class="profile-form">
+                  <label class="field"
+                    >Nome do perfil<input
+                      id="formatProfileName"
+                      type="text"
+                      maxlength="60"
+                      placeholder="Lançamento, Black Friday…"
+                      required
+                  /></label>
+                  <p class="hint">
+                    Use o mesmo nome para atualizar um perfil. Perfis ficam salvos neste navegador.
+                  </p>
+                  <button type="submit">Salvar perfil</button>
+                </form>
+              </details>
+            </div>
+            <button id="demo" class="text-button demo-button">Experimentar com um exemplo</button>
           </div>
           <button
             class="panel-resize"
@@ -1018,6 +1021,7 @@
     <script src="projects.js?v=dev"></script>
     <script src="workspace.js?v=dev"></script>
     <script src="format-profiles.js?v=dev"></script>
+    <script src="format-groups.js?v=dev"></script>
     <script src="background-menu.js?v=dev"></script>
     <script src="output-density.js?v=dev"></script>
     <script src="blueprint.js?v=dev"></script>

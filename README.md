@@ -43,11 +43,11 @@ servidor, chave de API ou LLM. Use Chrome ou Edge atualizado.
 ## Como usar
 
 1. Adicione um fundo ou escolha uma cor chapada. Carregue as imagens de logo, texto, oferta e botão ou escreva os textos no editor.
-2. Selecione formatos de saída; cadastre tamanhos personalizados e salve seleções em perfis.
+2. Selecione formatos de saída, organizados em grupos como **Ads Meta** e **Banners para sites**. Marque um grupo inteiro de uma vez, adicione tamanhos sugeridos por canal (Meta, banners IAB, Google Ads, LinkedIn) ou personalizados, mova tamanhos entre grupos e salve seleções em perfis.
 3. Clique em **Gerar composições** e ajuste os diagramas de posição para peças horizontais, superhorizontais, verticais e superverticais.
 4. Edite cada peça: mova, redimensione proporcionalmente, gire, agrupe, alinhe, oculte e bloqueie camadas. Use Ctrl+Z para desfazer.
 5. Siga a trilha de etapas acima das peças: ela mostra o que falta e leva ao painel certo. Peças com texto menor que 10 px, elementos fora da peça ou sobreposições recebem um alerta no card e no editor.
-6. Ajuste o fundo, o foco e seu zoom. Exporte um PNG ou todos os formatos em ZIP.
+6. Ajuste o fundo, o foco e seu zoom. Exporte um PNG, um grupo ou todos os formatos em ZIP, com uma pasta por grupo.
 7. Abra **Vídeos** para animar as camadas e baixar um MP4 por formato. Detalhes em [docs/VIDEO-STUDIO.md](docs/VIDEO-STUDIO.md).
 8. Salve um arquivo `.split` para guardar imagens, formatos, diagramas e ajustes da campanha.
 
@@ -79,7 +79,7 @@ O código-fonte está em `src/` e a versão publicada, gerada por `scripts/build
 - `app.js`, `editing.js`, `rotation.js`, `alignment.js`: canvas e edição.
 - `layout.js`, `blueprint.js`, `adaptation.js`: composição e planejamento.
 - `background.js`, `synthesis.js`, `feather.js`: adaptação e suavização do fundo.
-- `project-codec.js`, `projects.js`, `format-profiles.js`: projetos e perfis.
+- `project-codec.js`, `projects.js`, `format-profiles.js`, `format-groups.js`: projetos, perfis e grupos de formatos.
 - `output-density.js`: densidade DPI dos PNGs.
 - `video-studio.js`, `video-composition.js`, `video-animation.js`: autoria, prévia e contrato de vídeo.
 - `video-browser-render.js`: codificação do MP4 no navegador.

@@ -1,16 +1,16 @@
 {
   "schemaVersion": 1,
   "scope": "full",
-  "platform": "win32",
-  "nodeVersion": "v24.14.0",
+  "platform": "linux",
+  "nodeVersion": "v22.22.0",
   "results": [
     {
       "name": "unit",
       "passed": true,
       "exitCode": 0,
       "error": null,
-      "checks": 85,
-      "durationMs": 3150
+      "checks": 88,
+      "durationMs": 2025
     },
     {
       "name": "memory-browser.cjs",
@@ -18,7 +18,7 @@
       "exitCode": 0,
       "error": null,
       "checks": 16,
-      "durationMs": 16085
+      "durationMs": 10835
     },
     {
       "name": "preferences-browser.cjs",
@@ -26,7 +26,7 @@
       "exitCode": 0,
       "error": null,
       "checks": 12,
-      "durationMs": 16949
+      "durationMs": 12346
     },
     {
       "name": "learning-layout-browser.cjs",
@@ -34,7 +34,7 @@
       "exitCode": 0,
       "error": null,
       "checks": 7,
-      "durationMs": 11281
+      "durationMs": 7009
     },
     {
       "name": "evaluation-browser.cjs",
@@ -42,7 +42,23 @@
       "exitCode": 0,
       "error": null,
       "checks": 4,
-      "durationMs": 28411
+      "durationMs": 26339
+    },
+    {
+      "name": "flow-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "error": null,
+      "checks": 6,
+      "durationMs": 1924
+    },
+    {
+      "name": "format-groups-browser.cjs",
+      "passed": true,
+      "exitCode": 0,
+      "error": null,
+      "checks": 9,
+      "durationMs": 2871
     }
   ],
   "passed": true
